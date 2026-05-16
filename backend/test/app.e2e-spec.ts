@@ -16,6 +16,12 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  afterEach(async () => {
+    if (app) {
+      await app.close();
+    }
+  });
+
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
@@ -28,8 +34,13 @@ describe('AppController (e2e)', () => {
       .get('/health')
       .expect(200)
       .expect((res) => {
-        const body = res.body as { status: string; timestamp: string };
-        expect(body.status).toBe('ok');
+        const body = res.body as {
+          status: string;
+          timestamp: string;
+          database: string;
+        };
+        expect(['ok', 'degraded']).toContain(body.status);
+        expect(['up', 'down']).toContain(body.database);
         expect(new Date(body.timestamp).toISOString()).toBe(body.timestamp);
       });
   });

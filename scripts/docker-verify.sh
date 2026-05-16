@@ -168,6 +168,7 @@ run_http_e2e() {
   log "HTTP e2e: GET $api/health"
   body="$(curl -sf "$api/health")" || fail "health check failed"
   echo "$body" | grep -q '"status":"ok"' || fail "health body missing status ok"
+  echo "$body" | grep -q '"database":"up"' || fail "health body missing database up"
 
   log "HTTP e2e: POST $api/welcome (valid)"
   code="$(curl -s -o "$tmp" -w '%{http_code}' -X POST "$api/welcome" \

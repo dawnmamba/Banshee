@@ -29,7 +29,10 @@
 
 ```bash
 $ npm install
+$ cp .env.example .env   # Windows: copy .env.example .env
 ```
+
+Required environment variables (`PORT`, `CORS_ORIGIN`) are loaded from `.env` at startup.
 
 ## Compile and run the project
 
@@ -55,6 +58,33 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+```
+
+## Docker
+
+Build the image from this directory:
+
+```bash
+docker build -t banshee-backend .
+```
+
+Run the container (`.env` is not included in the image — pass env vars explicitly):
+
+```bash
+docker run --rm -p 3001:3001 \
+  -e PORT=3001 \
+  -e CORS_ORIGIN=http://localhost:3000 \
+  --name banshee-backend \
+  banshee-backend
+```
+
+Health check: http://localhost:3001/health
+
+Frontend image (from `../frontend`):
+
+```bash
+docker build -t banshee-frontend --build-arg NEXT_PUBLIC_API_URL=http://localhost:3001 .
+docker run --rm -p 3000:3000 --name banshee-frontend banshee-frontend
 ```
 
 ## Deployment

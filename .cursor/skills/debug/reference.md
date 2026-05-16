@@ -121,6 +121,18 @@ Use when `/debug` runs **without** doc attachments:
 6. [ ] If `doc/{feature}/` exists → read PRD + IMPLEMENTATION; else create `BUG_REPORT.md` only
 7. [ ] Continue scoped Phases 4–7
 
+### UI bug checklist (PrimeReact forms)
+
+When symptoms involve layout, styling, or missing styles on login/register or any PrimeReact form:
+
+1. [ ] `PrimeProvider` wraps app in `layout.tsx` and tests use `renderWithProviders`
+2. [ ] Pass-through keys on `password` in `frontend/src/lib/primereact/auth-pt.ts`: `iconField`, `inputIcon`, `input` (see [Frontend UI](#frontend-ui--primereact-unstyled--tailwind))
+3. [ ] Compare broken form to `frontend/src/components/user-auth/LoginForm.tsx`
+4. [ ] Fix `auth-pt.ts` globally before adding one-off `className` on components
+5. [ ] Password tests: `getByLabelText(/^password$/i)` not `/password/i`
+
+**Example root cause:** Password field half-width, eye icon below input → missing `iconField` / `inputIcon` pass-through on `password` in `auth-pt.ts`.
+
 ---
 
 ## TDD regression cycle
@@ -147,14 +159,26 @@ Run: `cd backend && npm test -- --testPathPattern=welcome-message`
 
 ### Frontend regression example
 
+For PrimeReact forms, use `renderWithProviders`:
+
 ```typescript
-it('shows validation error when last name is blank', async () => {
-  render(<WelcomeForm />);
-  await userEvent.type(screen.getByLabelText(/first name/i), 'Jane');
-  await userEvent.click(screen.getByRole('button', { name: /submit/i }));
-  expect(await screen.findByText(/last name/i)).toBeInTheDocument();
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { renderWithProviders } from '@/test/render';
+import { LoginForm } from './LoginForm';
+
+it('shows error when login fails', async () => {
+  const user = userEvent.setup();
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, text: async () => 'Invalid' }));
+  renderWithProviders(<LoginForm />);
+  await user.type(screen.getByLabelText(/email/i), 'a@b.com');
+  await user.type(screen.getByLabelText(/^password$/i), 'wrong');
+  await user.click(screen.getByRole('button', { name: /log in/i }));
+  expect(await screen.findByRole('alert')).toHaveTextContent(/invalid/i);
 });
 ```
+
+Legacy native forms (e.g. `WelcomeForm`) may still use bare `render()`.
 
 ### E2E when unit tests pass but UI fails
 
@@ -180,6 +204,71 @@ After adding a regression test, append to the test cases table:
 ```
 
 Add checklist row: `- [ ] T5 — regression BUG-001` → tick when green.
+
+---
+
+## Frontend UI — PrimeReact (unstyled + Tailwind)
+
+All **new or changed** form UI must match the auth forms pattern. Reference: `frontend/src/components/user-auth/LoginForm.tsx`, `RegisterForm.tsx`.
+
+| Piece | Path |
+|-------|------|
+| Provider | `frontend/src/components/PrimeProvider.tsx` (wired in `layout.tsx`) |
+| Pass-through theme | `frontend/src/lib/primereact/auth-pt.ts` (`authPt`, `labelClass`) |
+| Test helper | `frontend/src/test/render.tsx` (`renderWithProviders`) |
+| Icons CSS | `primeicons/primeicons.css` in `layout.tsx` (no PrimeReact theme CSS) |
+
+### Mandatory rules
+
+- **Do not** use native `<input>`, `<button>`, or `<p role="alert">` for form UI on fixes that touch forms.
+- **Do** use PrimeReact: `InputText`, `Password` (`feedback={false}`, `toggleMask` for secrets), `Button` (`loading`, `label`), `Message` (`severity="error"`).
+- **Do** import `labelClass` from `@/lib/primereact/auth-pt` for labels; rely on global `authPt` for field/button/error styling — no duplicated Tailwind on each field.
+- **Do** keep explicit `<label htmlFor="...">` — `InputText` uses `id`, `Password` uses `inputId`.
+- **Do not** import PrimeReact styled theme CSS; app uses **unstyled** mode only.
+- **Extend** `auth-pt.ts` when adding new PrimeReact component types. Do not add styled themes or PrimeFlex unless the user explicitly requests.
+- **UI bugfixes:** prefer extending `authPt` globally over one-off `className` on components.
+
+### Form field pattern
+
+```tsx
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Message } from 'primereact/message';
+import { Password } from 'primereact/password';
+import { labelClass } from '@/lib/primereact/auth-pt';
+
+<div>
+  <label htmlFor="email" className={labelClass}>Email</label>
+  <InputText id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+</div>
+<div>
+  <label htmlFor="password" className={labelClass}>Password</label>
+  <Password
+    inputId="password"
+    feedback={false}
+    toggleMask
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required
+  />
+</div>
+<Button type="submit" label={loading ? 'Saving…' : 'Submit'} loading={loading} disabled={loading} />
+{error && <Message severity="error" text={error} role="alert" />}
+```
+
+### Testing
+
+```tsx
+import { renderWithProviders } from '@/test/render';
+renderWithProviders(<MyForm />);
+```
+
+- Password with `toggleMask`: use `getByLabelText(/^password$/i)` — not `/password/i`.
+
+### Pass-through pitfalls
+
+- Password field narrow or eye icon below input → missing `iconField` / `inputIcon` pt on `password` in `auth-pt.ts`.
+- Do not set `password.root` to `flex items-center gap-2` — breaks full-width layout.
 
 ---
 

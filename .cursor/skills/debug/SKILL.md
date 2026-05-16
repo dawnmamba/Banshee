@@ -21,6 +21,7 @@ Read [reference.md](reference.md) for `BUG_REPORT.md` template, exploratory chec
 - **Git safety** — never force-push; stage only bugfix-related files.
 - **One bug report file per feature** — `doc/{feature-name}/BUG_REPORT.md`; multiple bugs as `## BUG-001`, `## BUG-002`.
 - Prefer fixing implementation over weakening tests; document test changes in `BUG_REPORT.md` and `IMPLEMENTATION.md` if the requirement was wrong.
+- **UI form bugfixes** — preserve PrimeReact + `auth-pt`; fix pass-through in `auth-pt.ts` before one-off `className` (see [reference.md — Frontend UI](reference.md#frontend-ui--primereact-unstyled--tailwind)).
 
 ---
 
@@ -59,6 +60,7 @@ If ambiguous, use **AskQuestion**: known feature vs exploratory.
    - `cd backend && npm test -- --testPathPattern={feature-name}`
    - `cd frontend && npm test -- --run`
 3. Reproduce manually (API curl / UI) using IMPLEMENTATION API contract.
+4. If symptom is layout/styling on login, register, or any PrimeReact form → inspect `frontend/src/lib/primereact/auth-pt.ts` and compare to `LoginForm.tsx`; see [reference.md — UI bug checklist](reference.md#ui-bug-checklist-primereact-forms).
 
 ### Phase 3 — Document bug
 
@@ -70,14 +72,14 @@ If ambiguous, use **AskQuestion**: known feature vs exploratory.
 
 1. **Red** — add/extend test that fails on current bug (use paths from `IMPLEMENTATION.md`):
    - Backend: `backend/src/{feature-name}/*.spec.ts` or `backend/test/{feature-name}.e2e-spec.ts`
-   - Frontend: `frontend/src/components/{feature-name}/*.test.tsx`
+   - Frontend: `frontend/src/components/{feature-name}/*.test.tsx` — use `renderWithProviders` for PrimeReact forms; `getByLabelText(/^password$/i)` for password fields with `toggleMask`
 2. Run tests; **must fail** for the reported behavior.
 3. If tests pass but manual repro fails → test is too narrow; add e2e/integration test first, then fix.
 4. Add row to `IMPLEMENTATION.md` test cases table (e.g. `T5 | regression BUG-001 | …`).
 
 ### Phase 5 — Fix and document
 
-1. **Green** — minimal fix.
+1. **Green** — minimal fix; for UI forms extend `authPt` in `auth-pt.ts` rather than duplicating Tailwind on components.
 2. **Refactor** — re-run targeted tests.
 3. Update `BUG_REPORT.md`: root cause, **Fixes applied**, regression test ref, status `fixed`, verification steps.
 4. Resume: append **Fix attempt N** block (do not delete history); see [reference.md](reference.md#resume--iterate).

@@ -18,6 +18,7 @@ Read [reference.md](reference.md) for repo-specific templates, TDD examples, and
 - **One feature per `/prd`** unless extending an existing `doc/{feature-name}/` folder.
 - **MVP first** — smallest vertical slice; defer DB, auth, polish unless required.
 - **Read before write** — match existing patterns in `frontend/` and `backend/`; no drive-by refactors.
+- **Frontend forms** — use PrimeReact unstyled + shared `auth-pt` (see [reference.md — Frontend UI](reference.md#frontend-ui--primereact-unstyled--tailwind)); no native form controls on new/changed UI.
 - **No secrets** — never commit `.env`; add vars to `.env.example` only.
 - **Stop and ask** before adding major dependencies (Postgres, OAuth, Redis, etc.).
 - **Fix until green** — on failure, fix and re-run (up to 10 attempts); no PR until all checks pass.
@@ -33,7 +34,7 @@ Read [reference.md](reference.md) for repo-specific templates, TDD examples, and
    - MVP scope for this run vs later
    - Data persistence (default: in-memory for MVP)
    - Auth / permissions if relevant
-   - UI: pages, key interactions
+   - UI: pages, key interactions, form fields; match auth zinc style (PrimeReact unstyled)?
 3. Summarize understanding in plain language.
 
 ---
@@ -58,6 +59,7 @@ User confirmation authorizes commit + PR in Phase 7.
    - User stories (As a … I want … so that …)
    - Functional requirements (numbered, testable)
    - Non-goals, success metrics, open questions
+   - **UI requirements** (when feature has forms): PrimeReact unstyled + Banshee zinc pass-through per `frontend/src/lib/primereact/auth-pt.ts` — see [reference.md](reference.md#frontend-ui--primereact-unstyled--tailwind)
 4. Write **`doc/{feature-name}/IMPLEMENTATION.md`**:
    - API contract (routes, request/response shapes)
    - **Test cases table** (drives Phases 4–5):
@@ -71,7 +73,7 @@ User confirmation authorizes commit + PR in Phase 7.
 | T2 | … | frontend | `Component.test.tsx` | … |
 ```
 
-   - File list (backend + frontend)
+   - File list (backend + frontend); include `frontend/src/lib/primereact/auth-pt.ts` (extend if new component types) and `renderWithProviders` for form tests
    - TDD checklist with `[ ]` per test case
 
 ---
@@ -107,11 +109,13 @@ Per backend row in `IMPLEMENTATION.md`:
 
 If `frontend` has no `npm test` script, run the **one-time Vitest setup** in [reference.md](reference.md) first.
 
+Before implementing UI, read [reference.md — Frontend UI](reference.md#frontend-ui--primereact-unstyled--tailwind). Form components must use PrimeReact (`InputText`, `Password`, `Button`, `Message`) and `labelClass` / `authPt` — not native inputs/buttons.
+
 Per frontend row in `IMPLEMENTATION.md`:
 
-1. **Red** — Add `frontend/src/components/{feature-name}/*.test.tsx` or colocated `*.test.tsx`; run:
+1. **Red** — Add `frontend/src/components/{feature-name}/*.test.tsx` or colocated `*.test.tsx`; use `renderWithProviders` from `@/test/render` for PrimeReact components; run:
    `cd frontend && npm test -- --run` — confirm failure.
-2. **Green** — Implement page (`frontend/src/app/{feature-name}/page.tsx`), components, `frontend/src/lib/api.ts`.
+2. **Green** — Implement page (`frontend/src/app/{feature-name}/page.tsx`), components, `frontend/src/lib/api.ts`; forms follow `LoginForm.tsx` pattern.
 3. **Refactor** — Re-run tests.
 4. Use `NEXT_PUBLIC_API_URL` (default `http://localhost:3001`).
 5. Tick off rows in `IMPLEMENTATION.md`.
@@ -167,6 +171,7 @@ When all pass, mark `IMPLEMENTATION.md` complete → Phase 7.
 - [ ] `cd frontend && npm test && npm run lint && npm run build`
 - [ ] TDD: see `doc/{feature-name}/IMPLEMENTATION.md` test cases
 - [ ] Manual: {smoke-test steps}
+- [ ] UI (if forms): fields full-width; password toggle inside field; dark mode OK
 
 ## Docs
 - PRD: `doc/{feature-name}/PRD.md`

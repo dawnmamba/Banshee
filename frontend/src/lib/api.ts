@@ -165,6 +165,71 @@ export async function changePassword(
   });
 }
 
+async function parseApiErrorMessage(res: Response): Promise<string> {
+  const text = await res.text();
+  try {
+    const json = JSON.parse(text) as {
+      message?: string | string[];
+    };
+    if (Array.isArray(json.message)) {
+      return json.message.join(', ');
+    }
+    if (typeof json.message === 'string') {
+      return json.message;
+    }
+  } catch {
+    /* use raw text */
+  }
+  return text || `HTTP ${res.status}`;
+}
+
+export async function fetchAccountBalance(): Promise<AccountBalanceResponse> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  const token = getAuthToken();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`${API_BASE_URL}/account/balance`, {
+    headers,
+    cache: 'no-store',
+  });
+
+  if (!res.ok) {
+    const message = await parseApiErrorMessage(res);
+    if (
+      res.status === 400 &&
+      message.toLowerCase().includes('account number in profile')
+    ) {
+      throw new AccountBalanceError(message, 'missing_account');
+    }
+    throw new AccountBalanceError(
+      message || 'Unable to retrieve account balance. Please try again.',
+      'unavailable',
+    );
+  }
+
+  return res.json() as Promise<AccountBalanceResponse>;
+}
+
+export type AccountBalanceResponse = {
+  formattedBalance: string;
+  currency: string;
+  ledgerBalance: string;
+};
+
+export class AccountBalanceError extends Error {
+  constructor(
+    message: string,
+    readonly kind: 'missing_account' | 'unavailable',
+  ) {
+    super(message);
+    this.name = 'AccountBalanceError';
+  }
+}
+
 export type WelcomeResponse = {
   message: string;
 };

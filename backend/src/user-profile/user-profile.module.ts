@@ -7,5 +7,6 @@ import { UserProfileService } from './user-profile.service';
   imports: [UserAuthModule],
   controllers: [UserProfileController],
   providers: [UserProfileService],
+  exports: [UserProfileService],
 })
 export class UserProfileModule {}

@@ -6,14 +6,18 @@ import { HealthModule } from './health/health.module';
 import { UserAuthModule } from './user-auth/user-auth.module';
 import { UserProfileModule } from './user-profile/user-profile.module';
 import { WelcomeMessageModule } from './welcome-message/welcome-message.module';
+import { BankingApiModule } from './banking-api/banking-api.module';
+import { AccountBalanceModule } from './account-balance/account-balance.module';
 
 @Module({
   imports: [
     DatabaseModule,
     HealthModule,
+    BankingApiModule,
     UserAuthModule,
     UserProfileModule,
     WelcomeMessageModule,
+    AccountBalanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

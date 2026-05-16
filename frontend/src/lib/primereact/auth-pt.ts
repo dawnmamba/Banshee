@@ -76,6 +76,17 @@ const selectButtonOptionClass =
 const selectButtonOptionSelectedClass =
   'flex flex-1 items-center justify-center rounded-lg border border-zinc-900 bg-zinc-900 p-2.5 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900';
 
+/** Visible labels for transaction section tabs (theme toggle keeps sr-only labels). */
+export const transactionsTabSelectPt = {
+  root: { className: selectButtonRootClass },
+  button: ({ context }: { context: { selected: boolean } }) => ({
+    className: context.selected
+      ? selectButtonOptionSelectedClass
+      : selectButtonOptionClass,
+  }),
+  label: { className: 'text-sm font-medium' },
+};
+
 export const authPt = {
   inputtext: {
     root: { className: inputClass },

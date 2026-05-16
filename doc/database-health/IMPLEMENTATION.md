@@ -43,6 +43,7 @@ Response `200` (database unreachable):
 | T3 | FR-4 | backend | `health.controller.spec.ts` | `GET /health` delegates to service and returns full shape |
 | T4 | FR-4–FR-6 | backend | `app.e2e-spec.ts` | `/health` returns 200 with `database` field (mocked DB in test) |
 | T5 | FR-2 | backend | `database.config.spec.ts` | `getDatabaseConfig()` maps env to TypeORM options |
+| T6 | FR-4 | frontend | `database-health/BackendStatus.test.tsx` | regression BUG-001 — shows database up/down from health API |
 
 ## Files
 
@@ -61,6 +62,13 @@ Response `200` (database unreachable):
 - `backend/test/app.e2e-spec.ts`
 - `scripts/docker-verify.sh` (health assertion includes `database`)
 
+### Frontend
+
+- `frontend/src/lib/api.ts` — `HealthResponse` includes `database`
+- `frontend/src/components/BackendStatus.tsx` — displays database row
+- `frontend/src/components/database-health/BackendStatus.test.tsx`
+- `frontend/src/app/health/page.tsx`
+
 ### Dependencies
 
 - `typeorm`, `pg` (Nest `DataSource` provider; `@nestjs/typeorm` when entities are added)
@@ -72,7 +80,8 @@ Response `200` (database unreachable):
 - [x] T3 — health controller spec
 - [x] T4 — e2e health shape
 - [x] T5 — database config spec
+- [x] T6 — regression BUG-001 (frontend database status)
 
 ## Status
 
-All Phase 6 backend checks passed.
+Backend and frontend checks passed. BUG-001 fixed: `/health` UI shows database connectivity.

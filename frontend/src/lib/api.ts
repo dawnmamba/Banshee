@@ -2,8 +2,9 @@ export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 export type HealthResponse = {
-  status: string;
+  status: 'ok' | 'degraded';
   timestamp: string;
+  database: 'up' | 'down';
 };
 
 export async function fetchHealth(): Promise<HealthResponse> {

@@ -1,4 +1,5 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, screen, waitFor } from '@testing-library/react';
+import { renderWithProviders } from '@/test/render';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { RegisterForm } from './RegisterForm';
@@ -22,7 +23,7 @@ describe('RegisterForm', () => {
   });
 
   it('renders first name, last name, email, password, and confirm password fields', () => {
-    render(<RegisterForm />);
+    renderWithProviders(<RegisterForm />);
 
     expect(screen.getByLabelText(/first name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/last name/i)).toBeInTheDocument();
@@ -36,7 +37,7 @@ describe('RegisterForm', () => {
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
 
-    render(<RegisterForm />);
+    renderWithProviders(<RegisterForm />);
 
     await user.type(screen.getByLabelText(/first name/i), 'Jane');
     await user.type(screen.getByLabelText(/last name/i), 'Doe');
@@ -69,7 +70,7 @@ describe('RegisterForm', () => {
       }),
     );
 
-    render(<RegisterForm />);
+    renderWithProviders(<RegisterForm />);
 
     await user.type(screen.getByLabelText(/first name/i), 'Jane');
     await user.type(screen.getByLabelText(/last name/i), 'Doe');

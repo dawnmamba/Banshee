@@ -3,8 +3,13 @@
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Message } from 'primereact/message';
+import { Password } from 'primereact/password';
 import { register } from '@/lib/api';
 import { setAuthToken } from '@/lib/auth';
+import { labelClass } from '@/lib/primereact/auth-pt';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -44,113 +49,87 @@ export function RegisterForm() {
     }
   }
 
-  const inputClassName =
-    'w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none focus:ring-2 focus:ring-zinc-400 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-50';
-
   return (
     <div className="w-full max-w-md space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label
-            htmlFor="firstName"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-          >
+          <label htmlFor="firstName" className={labelClass}>
             First name
           </label>
-          <input
+          <InputText
             id="firstName"
             type="text"
             autoComplete="given-name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
-            className={inputClassName}
           />
         </div>
         <div>
-          <label
-            htmlFor="lastName"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-          >
+          <label htmlFor="lastName" className={labelClass}>
             Last name
           </label>
-          <input
+          <InputText
             id="lastName"
             type="text"
             autoComplete="family-name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             required
-            className={inputClassName}
           />
         </div>
         <div>
-          <label
-            htmlFor="email"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-          >
+          <label htmlFor="email" className={labelClass}>
             Email
           </label>
-          <input
+          <InputText
             id="email"
             type="email"
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className={inputClassName}
           />
         </div>
         <div>
-          <label
-            htmlFor="password"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-          >
+          <label htmlFor="password" className={labelClass}>
             Password
           </label>
-          <input
-            id="password"
-            type="password"
+          <Password
+            inputId="password"
             autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            feedback={false}
+            toggleMask
             required
             minLength={8}
-            className={inputClassName}
           />
         </div>
         <div>
-          <label
-            htmlFor="confirmPassword"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-          >
+          <label htmlFor="confirmPassword" className={labelClass}>
             Confirm password
           </label>
-          <input
-            id="confirmPassword"
-            type="password"
+          <Password
+            inputId="confirmPassword"
             autoComplete="new-password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            feedback={false}
+            toggleMask
             required
             minLength={8}
-            className={inputClassName}
           />
         </div>
-        <button
+        <Button
           type="submit"
+          label={loading ? 'Creating account…' : 'Register'}
+          loading={loading}
           disabled={loading}
-          className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-        >
-          {loading ? 'Creating account…' : 'Register'}
-        </button>
+        />
       </form>
 
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <Message severity="error" text={error} role="alert" />}
 
       <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
         Already have an account?{' '}

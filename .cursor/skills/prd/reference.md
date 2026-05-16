@@ -198,9 +198,12 @@ Use `npm test -- --run` for CI/single run.
 
 ### Frontend test example
 
+For components that use PrimeReact (forms, buttons, inputs), use `renderWithProviders`:
+
 ```typescript
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import { renderWithProviders } from '@/test/render';
 import { TaskList } from './TaskList';
 
 describe('TaskList', () => {
@@ -212,7 +215,7 @@ describe('TaskList', () => {
         json: async () => [{ id: '1', title: 'Test task' }],
       }),
     );
-    render(<TaskList />);
+    renderWithProviders(<TaskList />);
     expect(await screen.findByText('Test task')).toBeInTheDocument();
   });
 });
@@ -236,6 +239,104 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
 ### Page route
 
 `frontend/src/app/{feature-name}/page.tsx` — route `/feature-name`.
+
+---
+
+## Frontend UI — PrimeReact (unstyled + Tailwind)
+
+All **new or changed** form UI must match the auth forms pattern. Reference: `frontend/src/components/user-auth/LoginForm.tsx`, `RegisterForm.tsx`.
+
+| Piece | Path |
+|-------|------|
+| Provider | `frontend/src/components/PrimeProvider.tsx` (wired in `layout.tsx`) |
+| Pass-through theme | `frontend/src/lib/primereact/auth-pt.ts` (`authPt`, `labelClass`) |
+| Test helper | `frontend/src/test/render.tsx` (`renderWithProviders`) |
+| Icons CSS | `primeicons/primeicons.css` in `layout.tsx` (no PrimeReact theme CSS) |
+
+### Mandatory rules
+
+- **Do not** use native `<input>`, `<button>`, or `<p role="alert">` for form UI.
+- **Do** use PrimeReact: `InputText`, `Password` (`feedback={false}`, `toggleMask` for secrets), `Button` (`loading`, `label`), `Message` (`severity="error"`).
+- **Do** import `labelClass` from `@/lib/primereact/auth-pt` for labels; rely on global `authPt` for field/button/error styling — no duplicated Tailwind on each field.
+- **Do** keep explicit `<label htmlFor="...">` — `InputText` uses `id`, `Password` uses `inputId`.
+- **Do not** import PrimeReact styled theme CSS; app uses **unstyled** mode only.
+- **Extend** `auth-pt.ts` when adding new PrimeReact component types (e.g. `dropdown`, `checkbox`). Do not add styled themes or PrimeFlex unless the user explicitly requests.
+- Legacy forms (e.g. `WelcomeForm`) may still use native HTML; do not migrate unless the feature touches that UI.
+
+### Form field pattern
+
+```tsx
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Message } from 'primereact/message';
+import { Password } from 'primereact/password';
+import { labelClass } from '@/lib/primereact/auth-pt';
+
+<div>
+  <label htmlFor="email" className={labelClass}>Email</label>
+  <InputText id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+</div>
+<div>
+  <label htmlFor="password" className={labelClass}>Password</label>
+  <Password
+    inputId="password"
+    feedback={false}
+    toggleMask
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required
+  />
+</div>
+<Button type="submit" label={loading ? 'Saving…' : 'Submit'} loading={loading} disabled={loading} />
+{error && <Message severity="error" text={error} role="alert" />}
+```
+
+### Page chrome (optional, match login/register)
+
+- Page wrapper: `flex flex-1 flex-col items-center justify-center bg-zinc-50 px-4 py-16 dark:bg-black`
+- Heading: `text-2xl font-semibold text-zinc-900 dark:text-zinc-50`
+- Subtitle: `text-sm text-zinc-600 dark:text-zinc-400`
+- Form container: `w-full max-w-md space-y-6`
+
+### Testing
+
+```tsx
+import { renderWithProviders } from '@/test/render';
+renderWithProviders(<MyForm />);
+```
+
+- Password with `toggleMask`: use `getByLabelText(/^password$/i)` — not `/password/i` (avoids matching "Show Password" toggle).
+
+### Pass-through pitfalls
+
+- Password field narrow or eye icon below input → missing `iconField` / `inputIcon` pt on `password` in `auth-pt.ts`.
+- Do not set `password.root` to `flex items-center gap-2` — breaks full-width layout.
+
+### File checklist (frontend forms)
+
+- [ ] Component: `frontend/src/components/{feature-name}/`
+- [ ] Page: `frontend/src/app/{route}/page.tsx`
+- [ ] Tests use `renderWithProviders`
+- [ ] Extend `auth-pt.ts` if new PrimeReact component families are needed
+- [ ] Dependencies: `primereact` and `primeicons` already installed — do not re-add unless missing
+
+### PRD / IMPLEMENTATION snippets
+
+Add to **`PRD.md`** when the feature has UI:
+
+```markdown
+## UI requirements
+- PrimeReact unstyled; styling via `frontend/src/lib/primereact/auth-pt.ts`
+- Components: InputText, Password, Button, Message
+- Reference: `frontend/src/components/user-auth/LoginForm.tsx`
+```
+
+Add to **`IMPLEMENTATION.md`** file list:
+
+```markdown
+- `frontend/src/lib/primereact/auth-pt.ts` (extend if new component types)
+- `frontend/src/test/render.tsx` — use `renderWithProviders` in form tests
+```
 
 ---
 

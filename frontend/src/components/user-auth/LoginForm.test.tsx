@@ -1,4 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import { renderWithProviders } from '@/test/render';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LoginForm } from './LoginForm';
@@ -35,10 +36,10 @@ describe('LoginForm', () => {
       }),
     );
 
-    render(<LoginForm />);
+    renderWithProviders(<LoginForm />);
 
     await user.type(screen.getByLabelText(/email/i), 'a@b.com');
-    await user.type(screen.getByLabelText(/password/i), 'password123');
+    await user.type(screen.getByLabelText(/^password$/i), 'password123');
     await user.click(screen.getByRole('button', { name: /log in/i }));
 
     await waitFor(() => {

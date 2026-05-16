@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { fetchProfile } from '@/lib/api';
 import { transactionsTabSelectPt } from '@/lib/primereact/auth-pt';
 import { FundTransferPanel } from './FundTransferPanel';
+import { TransferHistoryPanel } from './TransferHistoryPanel';
 
 type TabValue = 'transfer' | 'history';
 
@@ -105,15 +106,13 @@ export function TransactionsPage() {
               )}
             />
 
-            <div className={panelClass}>
-              {activeTab === 'transfer' ? (
+            {activeTab === 'transfer' ? (
+              <div className={panelClass}>
                 <FundTransferPanel />
-              ) : (
-                <p className="text-base text-zinc-600 dark:text-zinc-400">
-                  Transfer history will appear here.
-                </p>
-              )}
-            </div>
+              </div>
+            ) : (
+              <TransferHistoryPanel />
+            )}
           </div>
         )}
       </div>

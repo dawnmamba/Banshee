@@ -37,7 +37,8 @@ Users need a dedicated place in the app for money movement and past transfers. T
 9. **FR-9** — **External** form fields: Beneficiary name (required), Routing number (required), Account number (required), Amount (required, positive number), Memo (optional).
 10. **FR-10** — Only one transfer form is visible at a time; switching type shows the other form.
 11. **FR-11** — Submit validates required fields; on success shows a non-destructive success message (no API call).
-12. **FR-12** — History panel placeholder copy indicates history is coming later.
+12. **FR-12** — History panel lists static dummy transfer records as stacked banner cards (no API).
+13. **FR-13** — Each history banner shows date, status badge, amount, transfer type (Internal/External), and summary line.
 
 ## UI requirements
 
@@ -49,7 +50,7 @@ Users need a dedicated place in the app for money movement and past transfers. T
 ## Non-goals
 
 - Backend routes or banking API proxy for transfers.
-- Transfer history list or persistence.
+- Live transfer history from banking API or persistence.
 - Real fund movement or OTP / 2FA.
 
 ## Success metrics

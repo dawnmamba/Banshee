@@ -64,8 +64,9 @@ describe('TransactionsPage', () => {
     await user.click(screen.getByRole('button', { name: 'History' }));
 
     expect(
-      await screen.findByText(/transfer history will appear here/i),
-    ).toBeInTheDocument();
+      await screen.findAllByTestId('transfer-history-banner'),
+    ).toHaveLength(4);
+    expect(screen.getByText('$150.00')).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Internal' }),
     ).not.toBeInTheDocument();

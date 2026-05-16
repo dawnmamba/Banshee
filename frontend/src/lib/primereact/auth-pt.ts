@@ -11,7 +11,7 @@ export const linkMutedClass =
   'text-base text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50';
 
 export const headerClass =
-  'flex min-h-16 items-center justify-between gap-6 border-b border-zinc-200 bg-white px-8 py-4 dark:border-zinc-800 dark:bg-zinc-950';
+  'relative flex min-h-16 items-center justify-end gap-6 border-b border-zinc-200 bg-white px-8 py-4 dark:border-zinc-800 dark:bg-zinc-950';
 
 export const secondaryButtonClass =
   'rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-900';

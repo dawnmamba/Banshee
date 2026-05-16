@@ -4,11 +4,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { fetchHealth } from '@/lib/api';
 
 type Status = 'loading' | 'up' | 'down';
+type DatabaseStatus = 'up' | 'down' | null;
 
 const POLL_INTERVAL_MS = 10_000;
 
 export function BackendStatus() {
   const [status, setStatus] = useState<Status>('loading');
+  const [databaseStatus, setDatabaseStatus] = useState<DatabaseStatus>(null);
   const [lastChecked, setLastChecked] = useState<string | null>(null);
   const [serverTimestamp, setServerTimestamp] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -20,10 +22,12 @@ export function BackendStatus() {
     try {
       const data = await fetchHealth();
       setStatus('up');
+      setDatabaseStatus(data.database);
       setServerTimestamp(data.timestamp);
       setLastChecked(new Date().toISOString());
     } catch (err) {
       setStatus('down');
+      setDatabaseStatus(null);
       setServerTimestamp(null);
       setLastChecked(new Date().toISOString());
       setError(err instanceof Error ? err.message : 'Failed to reach backend');
@@ -86,6 +90,21 @@ export function BackendStatus() {
               <dt className="text-zinc-500 dark:text-zinc-400">Last checked</dt>
               <dd className="font-mono text-right text-zinc-900 dark:text-zinc-100">
                 {new Date(lastChecked).toLocaleString()}
+              </dd>
+            </div>
+          )}
+          {databaseStatus !== null && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-zinc-500 dark:text-zinc-400">Database</dt>
+              <dd
+                data-testid="database-status"
+                className={`font-semibold text-right ${
+                  databaseStatus === 'up'
+                    ? 'text-emerald-700 dark:text-emerald-400'
+                    : 'text-amber-700 dark:text-amber-400'
+                }`}
+              >
+                {databaseStatus === 'up' ? 'Up' : 'Down'}
               </dd>
             </div>
           )}

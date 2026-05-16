@@ -3,7 +3,7 @@ import { BackendStatus } from '@/components/BackendStatus';
 
 export const metadata = {
   title: 'Backend status | Banshee',
-  description: 'Life check — is the backend up or down?',
+  description: 'Life check — backend and database connectivity',
 };
 
 export default function HealthPage() {
@@ -15,7 +15,7 @@ export default function HealthPage() {
             Backend status
           </h1>
           <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-            Life check for the Nest API
+            Backend and PostgreSQL connectivity
           </p>
         </div>
 

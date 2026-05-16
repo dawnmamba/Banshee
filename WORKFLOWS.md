@@ -1,6 +1,6 @@
-# Workflows: `/prd` and `/debug`
+# Workflows: `/prd`, `/debug`, and `/docker-verify`
 
-This guide explains how to use Cursor skills in this repo to **build features** (`/prd`) and **fix bugs** (`/debug`). You do not need to read the agent skill files in `.cursor/skills/` unless you want full technical detail.
+This guide explains how to use Cursor skills in this repo to **build features** (`/prd`), **fix bugs** (`/debug`), and **verify Docker builds** (`/docker-verify`). You do not need to read the agent skill files in `.cursor/skills/` unless you want full technical detail.
 
 ## Project layout
 
@@ -9,7 +9,7 @@ This guide explains how to use Cursor skills in this repo to **build features** 
 | `backend/` | NestJS | 3001 |
 | `frontend/` | Next.js (App Router) | 3000 |
 
-Open the **repo root** in [Cursor](https://cursor.com), then type `/prd` or `/debug` in chat to run the matching skill.
+Open the **repo root** in [Cursor](https://cursor.com), then type `/prd`, `/debug`, or `/docker-verify` in chat to run the matching skill.
 
 Agent instructions live in `.cursor/skills/` — you normally do not edit those files.
 
@@ -196,6 +196,29 @@ cd frontend && npm test -- --run && npm run lint && npm run build
 
 ---
 
+## `/docker-verify` — Docker build gate
+
+Use when you want to confirm **production Docker images** are safe to deploy:
+
+1. Frees ports from `backend/.env` / `frontend/.env` (typically 3000, 3001)
+2. Builds and runs `banshee-backend` and `banshee-frontend`
+3. Runs HTTP checks against live containers + `backend npm run test:e2e`
+4. Reports **Build is SAFE** or **Build is NOT SAFE**
+
+```text
+/docker-verify
+```
+
+Or run the script directly from repo root:
+
+```bash
+./scripts/docker-verify.sh
+```
+
+See [.cursor/skills/docker-verify/SKILL.md](.cursor/skills/docker-verify/SKILL.md) and [.cursor/skills/docker-verify/reference.md](.cursor/skills/docker-verify/reference.md).
+
+---
+
 ## Further reading (agent / templates)
 
 | Topic | File |
@@ -204,3 +227,4 @@ cd frontend && npm test -- --run && npm run lint && npm run build
 | PRD templates, TDD examples | [.cursor/skills/prd/reference.md](.cursor/skills/prd/reference.md) |
 | Full `/debug` workflow | [.cursor/skills/debug/SKILL.md](.cursor/skills/debug/SKILL.md) |
 | Bug report template, git/PR | [.cursor/skills/debug/reference.md](.cursor/skills/debug/reference.md) |
+| Docker verify (SAFE / NOT SAFE) | [.cursor/skills/docker-verify/SKILL.md](.cursor/skills/docker-verify/SKILL.md) |

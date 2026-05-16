@@ -31,9 +31,12 @@ export function BackendStatus() {
   }, []);
 
   useEffect(() => {
-    void check();
+    const initial = setTimeout(() => void check(), 0);
     const id = setInterval(() => void check(), POLL_INTERVAL_MS);
-    return () => clearInterval(id);
+    return () => {
+      clearTimeout(initial);
+      clearInterval(id);
+    };
   }, [check]);
 
   const statusLabel =

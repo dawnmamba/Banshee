@@ -9,8 +9,8 @@ import { transactionsTabSelectPt } from '@/lib/primereact/auth-pt';
 type TabValue = 'transfer' | 'history';
 
 const TAB_OPTIONS: { label: string; value: TabValue }[] = [
-  { label: 'Fund Transfer', value: 'transfer' },
-  { label: 'Transfer History', value: 'history' },
+  { label: 'Transfer', value: 'transfer' },
+  { label: 'History', value: 'history' },
 ];
 
 const MISSING_ACCOUNT_MESSAGE =
@@ -99,6 +99,9 @@ export function TransactionsPage() {
               optionLabel="label"
               optionValue="value"
               aria-label="Transaction sections"
+              itemTemplate={(option: (typeof TAB_OPTIONS)[number]) => (
+                <span className="text-sm font-medium">{option.label}</span>
+              )}
             />
 
             <div className={panelClass}>

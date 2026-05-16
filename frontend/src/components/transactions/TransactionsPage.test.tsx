@@ -39,7 +39,7 @@ describe('TransactionsPage', () => {
     mockFetchProfile.mockReset();
   });
 
-  it('renders title and Fund Transfer panel by default when account exists', async () => {
+  it('renders title and Transfer panel by default when account exists', async () => {
     mockFetchProfile.mockResolvedValue(profileWithAccount);
 
     renderWithProviders(<TransactionsPage />);
@@ -50,22 +50,18 @@ describe('TransactionsPage', () => {
     expect(
       screen.getByText(/fund transfer options will appear here/i),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Fund Transfer' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Transfer History' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Transfer' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'History' })).toBeInTheDocument();
   });
 
-  it('switches to Transfer History panel when that tab is selected', async () => {
+  it('switches to History panel when that tab is selected', async () => {
     mockFetchProfile.mockResolvedValue(profileWithAccount);
     const user = userEvent.setup();
 
     renderWithProviders(<TransactionsPage />);
     await screen.findByRole('heading', { name: 'Transactions' });
 
-    await user.click(screen.getByRole('button', { name: 'Transfer History' }));
+    await user.click(screen.getByRole('button', { name: 'History' }));
 
     expect(
       await screen.findByText(/transfer history will appear here/i),
@@ -88,7 +84,7 @@ describe('TransactionsPage', () => {
       '/profile',
     );
     expect(
-      screen.queryByRole('button', { name: 'Fund Transfer' }),
+      screen.queryByRole('button', { name: 'Transfer' }),
     ).not.toBeInTheDocument();
   });
 
@@ -99,7 +95,7 @@ describe('TransactionsPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'Fund Transfer' }),
+        screen.getByRole('button', { name: 'Transfer' }),
       ).toBeInTheDocument();
     });
     expect(

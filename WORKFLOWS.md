@@ -31,6 +31,8 @@ doc/
 
 Use **kebab-case** for feature names (e.g. `welcome-message`, `task-list`).
 
+**Infrastructure:** [doc/database-migrations/MIGRATIONS.md](doc/database-migrations/MIGRATIONS.md) — TypeORM schema changes, npm scripts, and deployment behavior.
+
 ---
 
 ## `/prd` — Build a new feature

@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { DataSourceOptions } from 'typeorm';
 
 function requireEnv(name: string): string {
@@ -21,7 +22,10 @@ export function getDatabaseConfig(): DataSourceOptions {
     database: requireEnv('DB_NAME'),
     username: requireEnv('DB_USER'),
     password: String(requireEnv('DB_PASSWORD')),
-    entities: [],
+    entities: [join(__dirname, '..', '**', '*.entity.{ts,js}')],
+    migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
+    migrationsRun: true,
+    migrationsTableName: 'typeorm_migrations',
     synchronize: false,
     extra: {
       connectionTimeoutMillis: 2000,

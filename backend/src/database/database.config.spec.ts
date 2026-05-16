@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { getDatabaseConfig } from './database.config';
 
 describe('getDatabaseConfig', () => {
@@ -27,8 +28,15 @@ describe('getDatabaseConfig', () => {
       username: 'app',
       password: 'secret',
       synchronize: false,
-      entities: [],
+      migrationsRun: true,
+      migrationsTableName: 'typeorm_migrations',
     });
+    expect(config.entities).toEqual([
+      join(__dirname, '..', '**', '*.entity.{ts,js}'),
+    ]);
+    expect(config.migrations).toEqual([
+      join(__dirname, 'migrations', '*.{ts,js}'),
+    ]);
   });
 
   it('throws when DB_HOST is missing', () => {

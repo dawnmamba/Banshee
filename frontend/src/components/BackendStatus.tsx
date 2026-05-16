@@ -22,7 +22,11 @@ export function BackendStatus() {
     try {
       const data = await fetchHealth();
       setStatus('up');
-      setDatabaseStatus(data.database);
+      setDatabaseStatus(
+        data.database === 'up' || data.database === 'down'
+          ? data.database
+          : null,
+      );
       setServerTimestamp(data.timestamp);
       setLastChecked(new Date().toISOString());
     } catch (err) {

@@ -5,6 +5,7 @@ import { SelectButton } from 'primereact/selectbutton';
 import { useEffect, useState } from 'react';
 import { fetchProfile } from '@/lib/api';
 import { transactionsTabSelectPt } from '@/lib/primereact/auth-pt';
+import { FundTransferPanel } from './FundTransferPanel';
 
 type TabValue = 'transfer' | 'history';
 
@@ -106,9 +107,7 @@ export function TransactionsPage() {
 
             <div className={panelClass}>
               {activeTab === 'transfer' ? (
-                <p className="text-base text-zinc-600 dark:text-zinc-400">
-                  Fund transfer options will appear here.
-                </p>
+                <FundTransferPanel />
               ) : (
                 <p className="text-base text-zinc-600 dark:text-zinc-400">
                   Transfer history will appear here.

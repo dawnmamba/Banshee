@@ -2,20 +2,27 @@
 
 ## API contract
 
-None for this MVP (frontend-only shell). Future work may add:
+None for this slice (frontend-only). Future work may add:
 
-- `POST /transactions/transfer` — fund transfer proxy
+- `POST /transactions/transfer/internal` — internal fund transfer proxy
+- `POST /transactions/transfer/external` — external fund transfer proxy
 - `GET /transactions/history` — transfer list
 
 ## Test cases (TDD)
 
 | ID | Requirement | Layer | Test file | Describes |
 |----|-------------|-------|-----------|-----------|
-| T1 | FR-1, FR-8 | frontend | `Navbar.test.tsx` | Transactions link after Home, href `/transactions` |
-| T2 | FR-2, FR-3, FR-4, FR-5, FR-7 | frontend | `TransactionsPage.test.tsx` | Renders title, tabs, default Fund Transfer panel |
-| T3 | FR-3, FR-5 | frontend | `TransactionsPage.test.tsx` | Switching to Transfer History shows history placeholder |
-| T4 | FR-6 | frontend | `TransactionsPage.test.tsx` | Missing account number shows Profile guidance, no tabs |
-| T5 | FR-7 | frontend | `TransactionsPage.test.tsx` | With account number, tabs and panels visible |
+| T1 | FR-1, FR-6 | frontend | `Navbar.test.tsx` | Transactions link after Home, href `/transactions` |
+| T2 | FR-2, FR-3, FR-5, FR-7 | frontend | `TransactionsPage.test.tsx` | Title, tabs, default Transfer panel with Internal toggle |
+| T3 | FR-3, FR-12 | frontend | `TransactionsPage.test.tsx` | History tab shows history placeholder |
+| T4 | FR-4 | frontend | `TransactionsPage.test.tsx` | Missing account shows Profile guidance, no tabs |
+| T5 | FR-5 | frontend | `TransactionsPage.test.tsx` | With account, tabs visible |
+| T6 | FR-7, FR-8 | frontend | `TransactionsPage.test.tsx` | Internal form fields visible by default |
+| T7 | FR-9, FR-10 | frontend | `TransactionsPage.test.tsx` | External toggle shows external fields, hides internal |
+| T8 | FR-11 | frontend | `InternalTransferForm.test.tsx` | Empty submit shows validation errors |
+| T9 | FR-11 | frontend | `InternalTransferForm.test.tsx` | Valid submit shows success message |
+| T10 | FR-11 | frontend | `ExternalTransferForm.test.tsx` | Empty submit shows validation errors |
+| T11 | FR-11 | frontend | `ExternalTransferForm.test.tsx` | Valid submit shows success message |
 
 ## Files
 
@@ -29,17 +36,29 @@ None (deferred).
 - `frontend/src/components/navigation/Navbar.test.tsx`
 - `frontend/src/components/transactions/TransactionsPage.tsx`
 - `frontend/src/components/transactions/TransactionsPage.test.tsx`
+- `frontend/src/components/transactions/FundTransferPanel.tsx`
+- `frontend/src/components/transactions/InternalTransferForm.tsx`
+- `frontend/src/components/transactions/InternalTransferForm.test.tsx`
+- `frontend/src/components/transactions/ExternalTransferForm.tsx`
+- `frontend/src/components/transactions/ExternalTransferForm.test.tsx`
+- `frontend/src/components/transactions/transfer-validation.ts`
 - `frontend/src/app/transactions/page.tsx`
-- `frontend/src/lib/primereact/auth-pt.ts` (existing `selectbutton` pt)
+- `frontend/src/lib/primereact/auth-pt.ts` (existing `transactionsTabSelectPt`)
 
 ## TDD checklist
 
-- [x] T1 — Navbar test (red → green)
-- [x] T2 — TransactionsPage default tab (red → green)
-- [x] T3 — Tab switch (red → green)
-- [x] T4 — Missing account (red → green)
-- [x] T5 — With account (red → green)
+- [x] T1 — Navbar test
+- [x] T2 — TransactionsPage default tab
+- [x] T3 — Tab switch to History
+- [x] T4 — Missing account
+- [x] T5 — With account
+- [x] T6 — Internal form default
+- [x] T7 — External toggle
+- [x] T8 — Internal validation
+- [x] T9 — Internal success
+- [x] T10 — External validation
+- [x] T11 — External success
 
 ## Status
 
-Complete. Phase 6 checks passed.
+Complete. Fund transfer forms slice; Phase 6 checks passed.

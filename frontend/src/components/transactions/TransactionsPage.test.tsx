@@ -47,11 +47,11 @@ describe('TransactionsPage', () => {
     expect(
       await screen.findByRole('heading', { name: 'Transactions' }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/fund transfer options will appear here/i),
-    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Transfer' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'History' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Internal' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'External' })).toBeInTheDocument();
+    expect(screen.getByLabelText(/to account number/i)).toBeInTheDocument();
   });
 
   it('switches to History panel when that tab is selected', async () => {
@@ -67,8 +67,22 @@ describe('TransactionsPage', () => {
       await screen.findByText(/transfer history will appear here/i),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/fund transfer options will appear here/i),
+      screen.queryByRole('button', { name: 'Internal' }),
     ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/to account number/i)).not.toBeInTheDocument();
+  });
+
+  it('shows external form when External transfer type is selected', async () => {
+    mockFetchProfile.mockResolvedValue(profileWithAccount);
+    const user = userEvent.setup();
+
+    renderWithProviders(<TransactionsPage />);
+    await screen.findByRole('heading', { name: 'Transactions' });
+
+    await user.click(screen.getByRole('button', { name: 'External' }));
+
+    expect(screen.getByLabelText(/beneficiary name/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/to account number/i)).not.toBeInTheDocument();
   });
 
   it('shows Profile guidance when account number is missing', async () => {

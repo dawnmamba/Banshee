@@ -20,10 +20,9 @@ export function getDatabaseConfig(): DataSourceOptions {
     port,
     database: requireEnv('DB_NAME'),
     username: requireEnv('DB_USER'),
-    password: requireEnv('DB_PASSWORD'),
+    password: String(requireEnv('DB_PASSWORD')),
     entities: [],
     synchronize: false,
-    retryAttempts: 0,
     extra: {
       connectionTimeoutMillis: 2000,
     },

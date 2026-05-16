@@ -19,10 +19,7 @@ class DataSourceShutdown implements OnApplicationShutdown {
 }
 
 export async function createDataSource(): Promise<DataSource> {
-  const dataSource = new DataSource({
-    ...getDatabaseConfig(),
-    password: String(process.env.DB_PASSWORD ?? ''),
-  });
+  const dataSource = new DataSource(getDatabaseConfig());
 
   try {
     await dataSource.initialize();

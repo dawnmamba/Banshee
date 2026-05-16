@@ -17,7 +17,9 @@ describe('WelcomeMessage (e2e)', () => {
   });
 
   afterEach(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 
   it('POST /welcome returns welcome message', () => {

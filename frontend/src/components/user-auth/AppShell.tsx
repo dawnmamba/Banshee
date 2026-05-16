@@ -1,8 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
 import { AuthGate } from './AuthGate';
-import { LogoutButton } from './LogoutButton';
 
 const PUBLIC_PATHS = ['/login', '/register'];
 
@@ -12,12 +12,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthGate>
-      {!isPublic && (
-        <header className="flex items-center justify-end border-b border-zinc-200 px-6 py-3 dark:border-zinc-800">
-          <LogoutButton />
-        </header>
-      )}
-      {children}
+      <div className="flex min-h-0 flex-1 flex-col">
+        {!isPublic && <Navbar />}
+        {children}
+      </div>
     </AuthGate>
   );
 }

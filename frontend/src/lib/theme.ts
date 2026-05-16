@@ -1,0 +1,43 @@
+export const THEME_STORAGE_KEY = 'banshee-theme';
+
+export type ThemePreference = 'system' | 'light' | 'dark';
+
+export function getThemePreference(): ThemePreference {
+  if (typeof window === 'undefined') {
+    return 'system';
+  }
+  const stored = localStorage.getItem(THEME_STORAGE_KEY);
+  if (stored === 'light' || stored === 'dark' || stored === 'system') {
+    return stored;
+  }
+  return 'system';
+}
+
+export function setThemePreference(preference: ThemePreference): void {
+  localStorage.setItem(THEME_STORAGE_KEY, preference);
+}
+
+export function resolveTheme(preference: ThemePreference): 'light' | 'dark' {
+  if (preference === 'light') {
+    return 'light';
+  }
+  if (preference === 'dark') {
+    return 'dark';
+  }
+  if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+  }
+  return 'light';
+}
+
+export function applyThemeToDocument(resolved: 'light' | 'dark'): void {
+  const root = document.documentElement;
+  root.dataset.theme = resolved;
+  root.classList.toggle('dark', resolved === 'dark');
+  root.style.colorScheme = resolved;
+}
+
+/** Inline script for layout — applies stored theme before React hydrates. */
+export const themeInitScript = `(function(){try{var k='${THEME_STORAGE_KEY}';var s=localStorage.getItem(k);var d=s==='dark'||(s!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var r=document.documentElement;r.dataset.theme=d?'dark':'light';r.classList.toggle('dark',d);r.style.colorScheme=d?'dark':'light';}catch(e){}})();`;

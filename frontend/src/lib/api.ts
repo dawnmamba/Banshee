@@ -16,6 +16,36 @@ export type AuthUser = {
   lastName: string;
 };
 
+export type UserProfile = AuthUser & {
+  accountNumber: string | null;
+  nic: string | null;
+  address: string | null;
+  mobile: string | null;
+  landline: string | null;
+  secondaryEmail: string | null;
+};
+
+export type UpdateAccountInput = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
+export type UpdatePersonalInput = {
+  accountNumber: string;
+  nic: string;
+  address?: string;
+  mobile?: string;
+  landline?: string;
+  secondaryEmail?: string;
+};
+
+export type ChangePasswordInput = {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
 export type RegisterInput = {
   firstName: string;
   lastName: string;
@@ -102,6 +132,37 @@ export async function logout(): Promise<{ ok: true }> {
 
 export async function fetchMe(): Promise<AuthUser> {
   return apiFetch<AuthUser>('/auth/me');
+}
+
+export async function fetchProfile(): Promise<UserProfile> {
+  return apiFetch<UserProfile>('/profile');
+}
+
+export async function updateAccount(
+  input: UpdateAccountInput,
+): Promise<UserProfile> {
+  return apiFetch<UserProfile>('/profile/account', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updatePersonal(
+  input: UpdatePersonalInput,
+): Promise<UserProfile> {
+  return apiFetch<UserProfile>('/profile/personal', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function changePassword(
+  input: ChangePasswordInput,
+): Promise<{ ok: true }> {
+  return apiFetch<{ ok: true }>('/profile/change-password', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
 }
 
 export type WelcomeResponse = {

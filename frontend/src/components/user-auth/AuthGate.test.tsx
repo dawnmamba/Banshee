@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AuthGate } from './AuthGate';
 import { setAuthToken, clearAuthToken } from '@/lib/auth';
@@ -19,18 +19,20 @@ describe('AuthGate', () => {
     vi.mocked(usePathname).mockReturnValue('/');
   });
 
-  it('redirects unauthenticated users to login', () => {
+  it('redirects unauthenticated users to login', async () => {
     render(
       <AuthGate>
         <div>Protected</div>
       </AuthGate>,
     );
 
-    expect(replace).toHaveBeenCalledWith('/login');
+    await waitFor(() => {
+      expect(replace).toHaveBeenCalledWith('/login');
+    });
     expect(screen.queryByText('Protected')).not.toBeInTheDocument();
   });
 
-  it('allows authenticated users on protected routes', () => {
+  it('allows authenticated users on protected routes', async () => {
     setAuthToken('token');
     render(
       <AuthGate>
@@ -38,11 +40,11 @@ describe('AuthGate', () => {
       </AuthGate>,
     );
 
-    expect(screen.getByText('Protected')).toBeInTheDocument();
+    expect(await screen.findByText('Protected')).toBeInTheDocument();
     expect(replace).not.toHaveBeenCalled();
   });
 
-  it('redirects authenticated users away from login', () => {
+  it('redirects authenticated users away from login', async () => {
     setAuthToken('token');
     vi.mocked(usePathname).mockReturnValue('/login');
 
@@ -52,6 +54,8 @@ describe('AuthGate', () => {
       </AuthGate>,
     );
 
-    expect(replace).toHaveBeenCalledWith('/');
+    await waitFor(() => {
+      expect(replace).toHaveBeenCalledWith('/');
+    });
   });
 });

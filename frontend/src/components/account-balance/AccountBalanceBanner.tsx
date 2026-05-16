@@ -16,7 +16,7 @@ type LoadState =
   | { status: 'error'; message: string };
 
 const bannerClass =
-  'w-full rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900';
+  'w-full rounded-xl border border-zinc-200 bg-zinc-50 px-6 py-5 dark:border-zinc-800 dark:bg-zinc-900 sm:px-8';
 
 function BalanceBanner({ children }: { children: ReactNode }) {
   return <div className={bannerClass}>{children}</div>;
@@ -60,7 +60,7 @@ export function AccountBalanceBanner() {
   if (state.status === 'loading') {
     return (
       <BalanceBanner>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-base text-zinc-600 dark:text-zinc-400">
           Loading account balance…
         </p>
       </BalanceBanner>
@@ -70,7 +70,7 @@ export function AccountBalanceBanner() {
   if (state.status === 'missing_account') {
     return (
       <BalanceBanner>
-        <p className="text-sm text-zinc-700 dark:text-zinc-300">
+        <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {state.message}{' '}
           <Link
             href="/profile"
@@ -86,7 +86,7 @@ export function AccountBalanceBanner() {
   if (state.status === 'error') {
     return (
       <BalanceBanner>
-        <p className="text-sm text-red-600 dark:text-red-400">{state.message}</p>
+        <p className="text-base text-red-600 dark:text-red-400">{state.message}</p>
         <Button
           type="button"
           label="Retry"
@@ -97,7 +97,7 @@ export function AccountBalanceBanner() {
             setState({ status: 'loading' });
             setReloadKey((k) => k + 1);
           }}
-          className="mt-2 !w-auto"
+          className="mt-3 !w-auto"
         />
       </BalanceBanner>
     );
@@ -105,11 +105,11 @@ export function AccountBalanceBanner() {
 
   return (
     <BalanceBanner>
-      <p className="text-sm text-zinc-700 dark:text-zinc-300">
-        Your account balance is{' '}
-        <span className="font-semibold text-zinc-900 dark:text-zinc-50">
-          {state.data.formattedBalance}
-        </span>
+      <p className="text-base font-medium text-zinc-600 dark:text-zinc-400">
+        Your account balance is
+      </p>
+      <p className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
+        {state.data.formattedBalance}
       </p>
     </BalanceBanner>
   );

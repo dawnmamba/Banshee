@@ -14,17 +14,18 @@ export function HomePage() {
   }, []);
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-black">
-      <div className="mx-auto w-full max-w-3xl space-y-6 px-6 py-8">
-        <AccountBalanceBanner />
-        <div>
-          <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+    <div className="flex flex-1 flex-col bg-zinc-50 px-6 py-10 dark:bg-black sm:px-10">
+      <div className="mx-auto w-full max-w-4xl space-y-6">
+        <header>
+          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
             {user ? `Welcome, ${user.firstName}` : 'Welcome'}
           </h1>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-2 text-base text-zinc-600 dark:text-zinc-400">
             Your banking overview at a glance.
           </p>
-        </div>
+        </header>
+
+        <AccountBalanceBanner />
       </div>
     </div>
   );

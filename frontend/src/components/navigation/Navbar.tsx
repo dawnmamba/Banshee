@@ -11,7 +11,10 @@ export function Navbar() {
 
   return (
     <header className={headerClass}>
-      <nav aria-label="Main" className="flex items-center gap-6">
+      <nav
+        aria-label="Main"
+        className="absolute left-1/2 flex -translate-x-1/2 items-center gap-6"
+      >
         {NAV_ROUTES.map(({ href, label }) => {
           const isActive = pathname === href;
           return (

@@ -47,7 +47,9 @@ export class AccountBalanceService {
       const { Status, Account } = inquiry.Account_Balance_Inquiry;
 
       if (Status.Code !== '0000') {
-        throw new BadGatewayException(BALANCE_UNAVAILABLE_MESSAGE);
+        throw new BadGatewayException(
+          Status.Message?.trim() || BALANCE_UNAVAILABLE_MESSAGE,
+        );
       }
 
       const currency = Account.Currency_mnemonic || 'LKR';
@@ -66,7 +68,9 @@ export class AccountBalanceService {
         throw err;
       }
       if (err instanceof BankingApiError) {
-        throw new BadGatewayException(BALANCE_UNAVAILABLE_MESSAGE);
+        throw new BadGatewayException(
+          err.message || BALANCE_UNAVAILABLE_MESSAGE,
+        );
       }
       throw new BadGatewayException(BALANCE_UNAVAILABLE_MESSAGE);
     }

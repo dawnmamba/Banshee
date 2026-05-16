@@ -54,4 +54,27 @@ describe('BankingApiService', () => {
       BankingApiError,
     );
   });
+
+  it('request() extracts Status.Message from JSON error bodies', async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 403,
+      text: () =>
+        Promise.resolve(
+          JSON.stringify({
+            FundsTransfer_Response: {
+              Status: {
+                Code: '9040',
+                Message: 'Account not authorized for your subscription',
+              },
+            },
+          }),
+        ),
+    });
+
+    await expect(service.request('/forbidden')).rejects.toMatchObject({
+      message: 'Account not authorized for your subscription',
+      status: 403,
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import { BadRequestException, BadGatewayException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   BankingApiError,
@@ -83,7 +83,7 @@ describe('AccountBalanceService', () => {
     expect(bankingApi.request).not.toHaveBeenCalled();
   });
 
-  it('rejects non-success banking status code', async () => {
+  it('rejects non-success banking status code with banking message', async () => {
     userProfile.getProfile.mockResolvedValue({
       id: 'user-1',
       email: 'a@b.com',
@@ -98,17 +98,18 @@ describe('AccountBalanceService', () => {
     });
     bankingApi.request.mockResolvedValue({
       Account_Balance_Inquiry: {
-        Status: { Code: '9999', Message: 'Failed' },
+        Status: { Code: '9999', Message: 'Account not authorized' },
         Account: { Ledger_balance: '0', Currency_mnemonic: 'LKR' },
       },
     });
 
-    await expect(service.getBalance('user-1')).rejects.toBeInstanceOf(
-      BadGatewayException,
-    );
+    await expect(service.getBalance('user-1')).rejects.toMatchObject({
+      message: 'Account not authorized',
+      status: 502,
+    });
   });
 
-  it('maps BankingApiError to BadGatewayException', async () => {
+  it('maps BankingApiError message to BadGatewayException', async () => {
     userProfile.getProfile.mockResolvedValue({
       id: 'user-1',
       email: 'a@b.com',
@@ -121,10 +122,13 @@ describe('AccountBalanceService', () => {
       landline: null,
       secondaryEmail: null,
     });
-    bankingApi.request.mockRejectedValue(new BankingApiError('down', 503));
-
-    await expect(service.getBalance('user-1')).rejects.toBeInstanceOf(
-      BadGatewayException,
+    bankingApi.request.mockRejectedValue(
+      new BankingApiError('Banking service unavailable', 503),
     );
+
+    await expect(service.getBalance('user-1')).rejects.toMatchObject({
+      message: 'Banking service unavailable',
+      status: 502,
+    });
   });
 });

@@ -3,6 +3,7 @@ import {
   BANKING_API_CONFIG,
   type BankingApiConfig,
 } from './banking-api.config';
+import { extractBankingStatusMessage } from './banking-api-status';
 
 export class BankingApiError extends Error {
   constructor(
@@ -41,7 +42,14 @@ export class BankingApiService {
 
     if (!res.ok) {
       const text = await res.text();
-      throw new BankingApiError(text || `HTTP ${res.status}`, res.status);
+      let message = text || `HTTP ${res.status}`;
+      try {
+        const parsed: unknown = JSON.parse(text);
+        message = extractBankingStatusMessage(parsed) ?? message;
+      } catch {
+        /* keep raw text */
+      }
+      throw new BankingApiError(message, res.status);
     }
 
     return res.json() as Promise<T>;

@@ -12,6 +12,7 @@ vi.mock('@/lib/api', async (importOriginal) => {
     fetchTransactionImportSummary: vi.fn(),
     fetchImportedCustomerTransactions: vi.fn(),
     importTransactionHistory: vi.fn(),
+    runFraudAnalysis: vi.fn(),
   };
 });
 
@@ -41,6 +42,16 @@ describe('CustomersPage', () => {
       expect(screen.getByText('CUS0001')).toBeInTheDocument();
       expect(screen.getByText('VOXVERSE STUDIO')).toBeInTheDocument();
       expect(screen.getByText('2')).toBeInTheDocument();
+    });
+  });
+
+  it('shows Detect fraud when customers are loaded', async () => {
+    renderWithProviders(<CustomersPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /detect fraud/i }),
+      ).toBeEnabled();
     });
   });
 

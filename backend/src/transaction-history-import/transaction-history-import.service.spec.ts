@@ -1,10 +1,8 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource, EntityManager } from 'typeorm';
-import { ImportedAccountSummary } from './entities/imported-account-summary.entity';
 import { ImportedBankTransaction } from './entities/imported-bank-transaction.entity';
 import { ImportedCustomer } from './entities/imported-customer.entity';
-import { ImportedInquiryStatus } from './entities/imported-inquiry-status.entity';
 import { TransactionHistoryImportService } from './transaction-history-import.service';
 
 const PARSED_PAYLOAD = {
@@ -53,7 +51,7 @@ const PARSED_PAYLOAD = {
 describe('TransactionHistoryImportService', () => {
   let service: TransactionHistoryImportService;
   let manager: {
-    delete: jest.Mock;
+    query: jest.Mock;
     save: jest.Mock;
     find: jest.Mock;
     findOne: jest.Mock;
@@ -66,7 +64,7 @@ describe('TransactionHistoryImportService', () => {
 
   beforeEach(async () => {
     manager = {
-      delete: jest.fn().mockResolvedValue(undefined),
+      query: jest.fn().mockResolvedValue(undefined),
       save: jest.fn().mockResolvedValue(undefined),
       find: jest.fn(),
       findOne: jest.fn(),
@@ -111,10 +109,12 @@ describe('TransactionHistoryImportService', () => {
       const result = await service.importFromPayload(PARSED_PAYLOAD);
 
       expect(transactionFn).toHaveBeenCalled();
-      expect(manager.delete).toHaveBeenCalledWith(ImportedBankTransaction, {});
-      expect(manager.delete).toHaveBeenCalledWith(ImportedInquiryStatus, {});
-      expect(manager.delete).toHaveBeenCalledWith(ImportedAccountSummary, {});
-      expect(manager.delete).toHaveBeenCalledWith(ImportedCustomer, {});
+      expect(manager.query).toHaveBeenCalledWith(
+        expect.stringContaining('TRUNCATE TABLE'),
+      );
+      expect(manager.query).toHaveBeenCalledWith(
+        expect.stringContaining('imported_customers'),
+      );
       expect(manager.save).toHaveBeenCalledWith(
         ImportedCustomer,
         expect.arrayContaining([

@@ -13,7 +13,7 @@ describe('AdminHeader', () => {
     cleanup();
   });
 
-  it('links to dashboard and users', () => {
+  it('links to dashboard, users, and customers', () => {
     renderWithProviders(<AdminHeader />);
 
     expect(screen.getByRole('link', { name: /dashboard/i })).toHaveAttribute(
@@ -23,6 +23,10 @@ describe('AdminHeader', () => {
     expect(screen.getByRole('link', { name: /users/i })).toHaveAttribute(
       'href',
       '/admin/users',
+    );
+    expect(screen.getByRole('link', { name: /customers/i })).toHaveAttribute(
+      'href',
+      '/customers',
     );
   });
 });

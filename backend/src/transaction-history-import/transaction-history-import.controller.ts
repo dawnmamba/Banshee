@@ -5,7 +5,7 @@ import { RolesGuard } from '../user-auth/roles.guard';
 import { UserRole } from '../user-auth/user-role';
 import { TransactionHistoryImportService } from './transaction-history-import.service';
 
-@Controller('admin/transaction-import')
+@Controller('customers')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.Admin)
 export class TransactionHistoryImportController {
@@ -13,7 +13,7 @@ export class TransactionHistoryImportController {
     private readonly importService: TransactionHistoryImportService,
   ) {}
 
-  @Post()
+  @Post('import')
   import(@Body() body: unknown) {
     return this.importService.importFromPayload(body);
   }
@@ -23,7 +23,7 @@ export class TransactionHistoryImportController {
     return this.importService.getSummary();
   }
 
-  @Get('customers/:customerId/transactions')
+  @Get(':customerId/transactions')
   getTransactions(@Param('customerId') customerId: string) {
     return this.importService.getTransactions(customerId);
   }

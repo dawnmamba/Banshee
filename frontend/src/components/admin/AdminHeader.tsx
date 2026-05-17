@@ -10,6 +10,10 @@ const navLinkClass = (active: boolean) =>
     ? 'text-sm font-semibold text-zinc-900 dark:text-zinc-50'
     : `${linkMutedClass} text-sm`;
 
+function isCustomersPath(pathname: string): boolean {
+  return pathname === '/customers' || pathname.startsWith('/customers/');
+}
+
 export function AdminHeader() {
   const pathname = usePathname();
 
@@ -24,6 +28,12 @@ export function AdminHeader() {
           className={navLinkClass(pathname === '/admin/users')}
         >
           Users
+        </Link>
+        <Link
+          href="/customers"
+          className={navLinkClass(isCustomersPath(pathname))}
+        >
+          Customers
         </Link>
       </nav>
       <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">

@@ -2,7 +2,7 @@
 
 ## API contract
 
-### `POST /admin/transaction-import`
+### `POST /customers/import`
 
 **Auth:** Bearer JWT, role `admin`
 
@@ -29,7 +29,7 @@
 { "customerCount": 5, "transactionCount": 10 }
 ```
 
-### `GET /admin/transaction-import/summary`
+### `GET /customers/summary`
 
 **Response `200`:**
 
@@ -46,7 +46,7 @@
 ]
 ```
 
-### `GET /admin/transaction-import/customers/:customerId/transactions`
+### `GET /customers/:customerId/transactions`
 
 **Response `200`:**
 
@@ -71,8 +71,9 @@
 | T3 | FR-4 | backend | `transaction-history-import.service.spec.ts` | `getSummary()` returns counts per customer |
 | T4 | FR-5 | backend | `transaction-history-import.service.spec.ts` | `getTransactions(customerId)` returns rows |
 | T5 | FR-2,6 | backend | `transaction-history-import.controller.spec.ts` | Controller delegates to service |
+| T8 | FR-3 regression BUG-001 | backend | `transaction-history-import.service.spec.ts` | Full replace uses `clear()` not `delete({})` |
 | T6 | UI | frontend | `TransactionImportPanel.test.tsx` | Upload triggers API; shows success message |
-| T7 | UI | frontend | `AdminDashboard.test.tsx` | Renders summary table from API |
+| T7 | UI | frontend | `CustomersPage.test.tsx` | Renders summary table from API |
 
 ## File list
 
@@ -97,10 +98,13 @@
 
 - `frontend/src/lib/api.ts`
 - `frontend/src/lib/primereact/auth-pt.ts` (fileupload pt)
-- `frontend/src/components/admin/TransactionImportPanel.tsx`
-- `frontend/src/components/admin/TransactionImportPanel.test.tsx`
-- `frontend/src/components/admin/AdminDashboard.tsx`
-- `frontend/src/components/admin/AdminDashboard.test.tsx`
+- `frontend/src/app/customers/page.tsx`
+- `frontend/src/components/customers/TransactionImportPanel.tsx`
+- `frontend/src/components/customers/TransactionImportPanel.test.tsx`
+- `frontend/src/components/customers/CustomersPage.tsx`
+- `frontend/src/components/customers/CustomersPage.test.tsx`
+- `frontend/src/components/admin/AdminDashboard.tsx` (placeholder)
+- `frontend/src/components/admin/AdminHeader.tsx` (nav link to `/customers`)
 - `frontend/src/test/render.tsx`
 
 ## TDD checklist
@@ -112,3 +116,4 @@
 - [x] T5 — controller spec
 - [x] T6 — TransactionImportPanel test
 - [x] T7 — AdminDashboard test
+- [x] T8 — regression BUG-001 (clear vs empty delete)

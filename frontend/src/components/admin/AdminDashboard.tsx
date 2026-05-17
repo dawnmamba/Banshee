@@ -144,6 +144,13 @@ export function AdminDashboard() {
               iconClass="pi pi-lock"
               cta="Review permissions"
             />
+            <AdminQuickActionCard
+              href="/customers"
+              title="Imported customers"
+              description="Upload bank inquiry JSON and review stored customer transaction data."
+              iconClass="pi pi-database"
+              cta="Open customers"
+            />
           </div>
         </section>
 

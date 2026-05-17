@@ -2,7 +2,7 @@
 
 ## Overview
 
-Admins upload a bank **Transaction History Inquiry** JSON file. The backend validates the payload, **fully replaces** persisted import tables in PostgreSQL, and the admin dashboard shows customers, account summaries, and transaction counts from the database.
+Admins upload a bank **Transaction History Inquiry** JSON file. The backend validates the payload, **fully replaces** persisted import tables in PostgreSQL, and the `/customers` page shows customers, account summaries, and transaction counts from the database.
 
 ## Problem statement
 
@@ -24,10 +24,10 @@ Sample inquiry responses arrive as nested JSON (multiple customers, status, acco
 ## Functional requirements
 
 1. **FR-1** — Tables: `imported_customers`, `imported_inquiry_statuses`, `imported_account_summaries`, `imported_bank_transactions` with FKs and `unique_key` unique on transactions.
-2. **FR-2** — `POST /admin/transaction-import` (admin JWT): body matches inquiry envelope; on success returns `{ customerCount, transactionCount }`.
+2. **FR-2** — `POST /customers/import` (admin JWT): body matches inquiry envelope; on success returns `{ customerCount, transactionCount }`.
 3. **FR-3** — Import runs in a DB transaction: delete all import rows, then insert from payload.
-4. **FR-4** — `GET /admin/transaction-import/summary` (admin JWT): array of `{ customerId, accountShortName, accountBranch, currency, availableBalance, transactionCount }`.
-5. **FR-5** — `GET /admin/transaction-import/customers/:customerId/transactions` (admin JWT): transactions for one customer, newest posting date first.
+4. **FR-4** — `GET /customers/summary` (admin JWT): array of `{ customerId, accountShortName, accountBranch, currency, availableBalance, transactionCount }`.
+5. **FR-5** — `GET /customers/:customerId/transactions` (admin JWT): transactions for one customer, newest posting date first.
 6. **FR-6** — Invalid payload → `400` with message; non-admin → `403` (existing guards).
 
 ## Non-goals
@@ -48,7 +48,7 @@ Sample inquiry responses arrive as nested JSON (multiple customers, status, acco
 - PrimeReact unstyled; styling via `frontend/src/lib/primereact/auth-pt.ts` (extend `fileupload` if needed).
 - Components: `FileUpload`, `Button`, `Message`, `DataTable` or semantic HTML table with zinc classes.
 - Reference: `frontend/src/components/user-auth/LoginForm.tsx`.
-- Admin page: `/admin` — upload section + summary table; select row to load transactions list.
+- Customers page: `/customers` (admin-only) — upload section + summary table; select row to load transactions list. `/admin` remains a placeholder with link to `/customers`.
 
 ## Open questions
 

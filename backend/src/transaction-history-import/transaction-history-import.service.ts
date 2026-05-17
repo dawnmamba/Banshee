@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import { ImportedAccountSummary } from './entities/imported-account-summary.entity';
 import { ImportedBankTransaction } from './entities/imported-bank-transaction.entity';
 import { ImportedCustomer } from './entities/imported-customer.entity';
@@ -28,18 +28,28 @@ export type ImportedTransactionRowDto = {
   runningBalance: string;
 };
 
+const TRUNCATE_IMPORT_TABLES_SQL = `
+  TRUNCATE TABLE
+    imported_bank_transactions,
+    imported_inquiry_statuses,
+    imported_account_summaries,
+    imported_customers
+  RESTART IDENTITY CASCADE
+`;
+
 @Injectable()
 export class TransactionHistoryImportService {
   constructor(private readonly dataSource: DataSource) {}
+
+  async clearImportTables(manager: EntityManager): Promise<void> {
+    await manager.query(TRUNCATE_IMPORT_TABLES_SQL);
+  }
 
   async importFromPayload(payload: unknown): Promise<ImportResultDto> {
     const parsed = parseImportPayload(payload);
 
     return this.dataSource.transaction(async (manager) => {
-      await manager.delete(ImportedBankTransaction, {});
-      await manager.delete(ImportedInquiryStatus, {});
-      await manager.delete(ImportedAccountSummary, {});
-      await manager.delete(ImportedCustomer, {});
+      await this.clearImportTables(manager);
 
       const customers: ImportedCustomer[] = [];
       const statuses: ImportedInquiryStatus[] = [];

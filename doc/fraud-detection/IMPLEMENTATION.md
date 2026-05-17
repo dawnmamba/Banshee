@@ -19,14 +19,14 @@
 }
 ```
 
-**Errors:** `400` no imported data; `503` Gemini unavailable / missing API key.
+**Errors:** `400` no imported data; `503` Azure AI Foundry unavailable / missing config.
 
 ## Test cases (TDD)
 
 | ID | Requirement | Layer | Test file | Describes |
 |----|-------------|-------|-----------|-----------|
 | T1 | Reject when no customers | backend | `fraud-detection.service.spec.ts` | `analyze()` throws BadRequest |
-| T2 | Calls Gemini with customer JSON | backend | `fraud-detection.service.spec.ts` | Payload + parse structured response |
+| T2 | Calls Azure AI Foundry with customer JSON | backend | `fraud-detection.service.spec.ts` | Payload + parse structured response |
 | T3 | Controller delegates | backend | `transaction-history-import.controller.spec.ts` | `analyzeFraud()` |
 | T4 | Button disabled when no rows | frontend | `FraudDetectionPanel.test.tsx` | Empty summary |
 | T5 | Opens modal, loading, shows result | frontend | `FraudDetectionPanel.test.tsx` | Happy path |
@@ -38,10 +38,11 @@
 
 - `backend/src/fraud-detection/fraud-detection.service.ts`
 - `backend/src/fraud-detection/fraud-detection.service.spec.ts`
-- `backend/src/fraud-detection/gemini.service.ts`
+- `backend/src/fraud-detection/azure-ai-foundry.service.ts`
+- `backend/src/fraud-detection/parse-fraud-analysis-response.ts`
 - `backend/src/transaction-history-import/transaction-history-import.controller.ts` (route)
 - `backend/src/transaction-history-import/transaction-history-import.module.ts`
-- `backend/.env.example` (`GEMINI_API_KEY`, `GEMINI_MODEL`)
+- `backend/.env.example` (`AZURE_AI_FOUNDRY_ENDPOINT`, `AZURE_AI_FOUNDRY_API_KEY`, `AZURE_AI_FOUNDRY_DEPLOYMENT`)
 
 **Frontend**
 

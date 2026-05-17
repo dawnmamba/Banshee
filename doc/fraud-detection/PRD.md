@@ -1,8 +1,8 @@
-# Fraud detection (Gemini) — PRD
+# Fraud detection (Azure AI Foundry) — PRD
 
 ## Overview
 
-Admins on the **Customers** page can run AI-assisted fraud analysis over all imported customer records (with account summary, inquiry status, and transactions). Results appear in a modal after the backend calls Gemini.
+Admins on the **Customers** page can run AI-assisted fraud analysis over all imported customer records (with account summary, inquiry status, and transactions). Results appear in a modal after the backend calls an Azure AI Foundry hosted model.
 
 ## Problem statement
 
@@ -11,7 +11,7 @@ Imported bank transaction data may contain suspicious patterns. Manual review do
 ## Goals
 
 - One **Detect fraud** action on `/customers` (admin-only).
-- Backend loads **all** imported customers with relations, sends JSON to **Gemini 2.0 Flash** (API key server-side only).
+- Backend loads **all** imported customers with relations, sends JSON to an **Azure AI Foundry** hosted model (credentials server-side only).
 - Modal shows loading state, then **structured summary** (risk level, fraud flag, flagged customers) and **narrative** text.
 - Button **disabled** when no imported customers exist.
 
@@ -25,8 +25,8 @@ Imported bank transaction data may contain suspicious patterns. Manual review do
 
 1. `POST /customers/fraud-analysis` (JWT + Admin role) returns `{ riskLevel, fraudDetected, flaggedCustomers, narrative }`.
 2. Endpoint loads every `imported_customers` row with `inquiryStatus`, `accountSummary`, and `transactions`.
-3. Backend serializes that data as JSON and prompts Gemini; response is parsed into the contract above.
-4. Missing `GEMINI_API_KEY` yields a clear 503/500 error message (no key in client).
+3. Backend serializes that data as JSON and prompts the Foundry deployment; response is parsed into the contract above.
+4. Missing Azure AI Foundry config yields a clear 503/500 error message (no credentials in client).
 5. Empty import data: endpoint returns 400; frontend disables the button when summary is empty.
 6. Customers page: **Detect fraud** opens PrimeReact `Dialog`, shows spinner/text while waiting, then results or error.
 
@@ -34,12 +34,12 @@ Imported bank transaction data may contain suspicious patterns. Manual review do
 
 - Persisting analysis history.
 - Per-customer-only analysis.
-- Real-time streaming from Gemini.
+- Real-time streaming from the model.
 - Non-admin access.
 
 ## Success metrics
 
-- E2E/unit tests pass; manual smoke with valid `GEMINI_API_KEY` returns modal content.
+- E2E/unit tests pass; manual smoke with valid Azure AI Foundry env returns modal content.
 - API key never exposed to the browser.
 
 ## Open questions

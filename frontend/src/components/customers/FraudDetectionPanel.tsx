@@ -72,7 +72,7 @@ export function FraudDetectionPanel({ hasCustomers }: FraudDetectionPanelProps) 
       >
         {loading && (
           <p className="text-zinc-600 dark:text-zinc-400" role="status">
-            Analyzing imported customers with Gemini…
+            Analyzing imported customers with Azure AI…
           </p>
         )}
 

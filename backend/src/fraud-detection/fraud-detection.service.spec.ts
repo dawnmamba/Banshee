@@ -7,12 +7,12 @@ import type {
   FraudAnalysisResultDto,
 } from './fraud-detection.types';
 import { FraudDetectionService } from './fraud-detection.service';
-import { GeminiService } from './gemini.service';
+import { AzureAiFoundryService } from './azure-ai-foundry.service';
 
 describe('FraudDetectionService', () => {
   let service: FraudDetectionService;
   let customerRepo: { find: jest.Mock };
-  let geminiService: {
+  let azureAiFoundryService: {
     analyzeFraud: jest.MockedFunction<
       (payload: FraudAnalysisPayload) => Promise<FraudAnalysisResultDto>
     >;
@@ -50,7 +50,7 @@ describe('FraudDetectionService', () => {
 
   beforeEach(async () => {
     customerRepo = { find: jest.fn() };
-    geminiService = {
+    azureAiFoundryService = {
       analyzeFraud: jest.fn(),
     };
 
@@ -64,8 +64,8 @@ describe('FraudDetectionService', () => {
           },
         },
         {
-          provide: GeminiService,
-          useValue: geminiService,
+          provide: AzureAiFoundryService,
+          useValue: azureAiFoundryService,
         },
       ],
     }).compile();
@@ -77,12 +77,12 @@ describe('FraudDetectionService', () => {
     customerRepo.find.mockResolvedValue([]);
 
     await expect(service.analyze()).rejects.toBeInstanceOf(BadRequestException);
-    expect(geminiService.analyzeFraud).not.toHaveBeenCalled();
+    expect(azureAiFoundryService.analyzeFraud).not.toHaveBeenCalled();
   });
 
-  it('analyze() calls Gemini with customer payload and returns parsed result', async () => {
+  it('analyze() calls Azure AI Foundry with customer payload and returns parsed result', async () => {
     customerRepo.find.mockResolvedValue([sampleCustomer]);
-    geminiService.analyzeFraud.mockResolvedValue({
+    azureAiFoundryService.analyzeFraud.mockResolvedValue({
       riskLevel: 'high',
       fraudDetected: true,
       flaggedCustomers: [
@@ -93,8 +93,8 @@ describe('FraudDetectionService', () => {
 
     const result = await service.analyze();
 
-    expect(geminiService.analyzeFraud).toHaveBeenCalledTimes(1);
-    const firstCall = geminiService.analyzeFraud.mock.calls.at(0);
+    expect(azureAiFoundryService.analyzeFraud).toHaveBeenCalledTimes(1);
+    const firstCall = azureAiFoundryService.analyzeFraud.mock.calls.at(0);
     const payload = firstCall?.[0] as FraudAnalysisPayload;
     expect(payload.customers[0]?.customerId).toBe('CUS0001');
     expect(payload.customers[0]?.transactions[0]?.uniqueKey).toBe(

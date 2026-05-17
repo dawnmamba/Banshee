@@ -5,13 +5,13 @@ import type {
   FraudAnalysisPayload,
   FraudAnalysisResultDto,
 } from './fraud-detection.types';
-import { GeminiService } from './gemini.service';
+import { AzureAiFoundryService } from './azure-ai-foundry.service';
 
 @Injectable()
 export class FraudDetectionService {
   constructor(
     private readonly dataSource: DataSource,
-    private readonly geminiService: GeminiService,
+    private readonly azureAiFoundryService: AzureAiFoundryService,
   ) {}
 
   async analyze(): Promise<FraudAnalysisResultDto> {
@@ -27,7 +27,7 @@ export class FraudDetectionService {
     }
 
     const payload = this.buildPayload(customers);
-    return this.geminiService.analyzeFraud(payload);
+    return this.azureAiFoundryService.analyzeFraud(payload);
   }
 
   buildPayload(customers: ImportedCustomer[]): FraudAnalysisPayload {

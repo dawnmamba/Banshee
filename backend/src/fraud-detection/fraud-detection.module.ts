@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
+import { AzureAiFoundryService } from './azure-ai-foundry.service';
 import { FraudDetectionService } from './fraud-detection.service';
-import { GeminiService } from './gemini.service';
 
 @Module({
-  providers: [FraudDetectionService, GeminiService],
+  providers: [FraudDetectionService, AzureAiFoundryService],
   exports: [FraudDetectionService],
 })
 export class FraudDetectionModule {}

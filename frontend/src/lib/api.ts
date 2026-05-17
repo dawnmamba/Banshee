@@ -316,3 +316,53 @@ export async function postWelcome(
     body: JSON.stringify({ firstName, lastName }),
   });
 }
+
+export type AdminUserListItem = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: UserRole;
+  accountNumber: string | null;
+  nic: string | null;
+  mobile: string | null;
+  createdAt: string;
+};
+
+export type AdminUsersResponse = {
+  users: AdminUserListItem[];
+};
+
+export async function fetchAdminUsers(
+  search?: string,
+): Promise<AdminUsersResponse> {
+  const params = search?.trim()
+    ? `?${new URLSearchParams({ search: search.trim() })}`
+    : '';
+  return apiFetch<AdminUsersResponse>(`/admin/users${params}`);
+}
+
+export async function updateAdminUserRole(
+  userId: string,
+  role: UserRole,
+): Promise<AdminUserListItem> {
+  return apiFetch<AdminUserListItem>(`/admin/users/${userId}/role`, {
+    method: 'PATCH',
+    body: JSON.stringify({ role }),
+  });
+}
+
+export type AdminDashboardStats = {
+  totalUsers: number;
+  adminCount: number;
+  userCount: number;
+};
+
+export type AdminDashboardResponse = {
+  message: string;
+  stats: AdminDashboardStats;
+};
+
+export async function fetchAdminDashboard(): Promise<AdminDashboardResponse> {
+  return apiFetch<AdminDashboardResponse>('/admin/dashboard');
+}

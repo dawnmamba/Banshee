@@ -246,8 +246,15 @@ STEP="docker run backend"
 if [[ ! -f "$BACKEND_ENV_FILE" ]]; then
   fail "Missing $BACKEND_ENV_FILE (required for --env-file)"
 fi
+BACKEND_RUN_EXTRA=()
+# Reach Postgres on the host when .env uses localhost (Docker Desktop / Linux host-gateway).
+if grep -qE '^[[:space:]]*DB_HOST=(localhost|127\.0\.0\.1)[[:space:]]*$' "$BACKEND_ENV_FILE" 2>/dev/null; then
+  BACKEND_RUN_EXTRA+=(--add-host=host.docker.internal:host-gateway -e DB_HOST=host.docker.internal)
+  log "Backend DB_HOST overridden to host.docker.internal for container"
+fi
 docker run -d \
   -p "${PORT}:${PORT}" \
+  "${BACKEND_RUN_EXTRA[@]}" \
   --env-file "$BACKEND_ENV_FILE" \
   --name "$BACKEND_CONTAINER" \
   "$BACKEND_IMAGE"

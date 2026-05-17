@@ -1,5 +1,6 @@
 'use client';
 
+import { useLayoutEffect } from 'react';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { FieldLabel } from '@/components/FieldLabel';
@@ -8,7 +9,7 @@ import {
   calendarPt,
   historySearchButtonPt,
 } from '@/lib/primereact/auth-pt';
-import { blurActiveInputAfterCalendarSelect } from './transfer-history-calendar';
+import { syncCalendarInputDisplay } from './transfer-history-calendar';
 
 type TransferHistoryDateRangeProps = {
   startDate: Date | null;
@@ -37,9 +38,10 @@ export function TransferHistoryDateRange({
   onEndDateChange,
   onSearch,
 }: TransferHistoryDateRangeProps) {
-  const handleSelect = () => {
-    blurActiveInputAfterCalendarSelect();
-  };
+  useLayoutEffect(() => {
+    syncCalendarInputDisplay('history-start-date', startDate);
+    syncCalendarInputDisplay('history-end-date', endDate);
+  }, [endDate, startDate]);
 
   return (
     <div className="space-y-4 rounded-xl border border-zinc-200 bg-white px-6 py-5 dark:border-zinc-800 dark:bg-zinc-900 sm:px-8">
@@ -53,7 +55,6 @@ export function TransferHistoryDateRange({
             inputId="history-start-date"
             value={startDate}
             onChange={(e) => onStartDateChange((e.value as Date | null) ?? null)}
-            onSelect={handleSelect}
             maxDate={endDate ?? undefined}
           />
         </div>
@@ -70,7 +71,6 @@ export function TransferHistoryDateRange({
                 onChange={(e) =>
                   onEndDateChange((e.value as Date | null) ?? null)
                 }
-                onSelect={handleSelect}
                 minDate={startDate ?? undefined}
               />
             </div>

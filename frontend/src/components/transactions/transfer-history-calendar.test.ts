@@ -1,22 +1,36 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { blurActiveInputAfterCalendarSelect } from './transfer-history-calendar';
+import { describe, expect, it } from 'vitest';
+import {
+  formatPrimeCalendarDate,
+  syncCalendarInputDisplay,
+} from './transfer-history-calendar';
 
-describe('blurActiveInputAfterCalendarSelect', () => {
-  afterEach(() => {
-    vi.useRealTimers();
+describe('formatPrimeCalendarDate', () => {
+  it('formats dates like PrimeReact dd/mm/yy', () => {
+    expect(formatPrimeCalendarDate(new Date(2026, 0, 15))).toBe('15/01/2026');
+  });
+});
+
+describe('syncCalendarInputDisplay', () => {
+  it('writes the formatted date into the calendar input', () => {
+    const input = document.createElement('input');
+    input.id = 'history-start-date';
+    document.body.appendChild(input);
+
+    syncCalendarInputDisplay('history-start-date', new Date(2026, 0, 10));
+
+    expect(input).toHaveValue('10/01/2026');
+    document.body.removeChild(input);
   });
 
-  it('blurs the focused input after a tick', () => {
-    vi.useFakeTimers();
+  it('clears the input when date is null', () => {
     const input = document.createElement('input');
+    input.id = 'history-end-date';
+    input.value = '31/01/2026';
     document.body.appendChild(input);
-    input.focus();
-    const blurSpy = vi.spyOn(input, 'blur');
 
-    blurActiveInputAfterCalendarSelect();
-    vi.runAllTimers();
+    syncCalendarInputDisplay('history-end-date', null);
 
-    expect(blurSpy).toHaveBeenCalled();
+    expect(input).toHaveValue('');
     document.body.removeChild(input);
   });
 });

@@ -61,6 +61,7 @@
 | T15 | FR-13, FR-15 | backend | `transaction-history.service.spec.ts` | Service + account gating |
 | T16 | FR-13 | backend | `transaction-history.controller.spec.ts` | Controller |
 | T17 | FR-13 | backend | `test/transaction-history.e2e-spec.ts` | HTTP 200 with JWT |
+| T18 | FR-12 regression BUG-001 | frontend | `TransferHistoryDateRange.test.tsx`, `transfer-history-calendar.test.ts` | Calendar inputs show selected dates |
 
 ## Files
 
@@ -82,6 +83,7 @@
 
 - [x] T1–T12 — prior + history UI tests
 - [x] T13–T17 — backend transaction history
+- [x] T18 — regression BUG-001 calendar input display
 
 ## Status
 

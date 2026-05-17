@@ -91,9 +91,13 @@ const calendarDayClass =
 const calendarDaySelectedClass =
   'bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200';
 
-export const calendarInputClass = `${inputClass} min-w-0 w-full flex-1 rounded-r-none border-r-0 !text-zinc-900 placeholder:text-zinc-400 dark:!text-zinc-50 dark:placeholder:text-zinc-500`;
+export const calendarInputClass = `${inputClass} min-w-[10rem] grow basis-0 rounded-r-none border-r-0 !text-zinc-900 placeholder:text-zinc-400 dark:!text-zinc-50 dark:placeholder:text-zinc-500`;
 
-const calendarTriggerClass =
+/** Compact icon trigger — overrides global `button` pt (`w-full`). */
+const calendarIconButtonClass =
+  'inline-flex !w-10 !max-w-10 !flex-none shrink-0 items-center justify-center self-stretch rounded-lg border border-zinc-300 bg-white !px-0 text-zinc-700 transition hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900';
+
+const calendarNavButtonClass =
   'inline-flex shrink-0 items-center justify-center rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-zinc-700 transition hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900';
 
 /** PrimeReact Calendar (date picker) — use via pt={calendarPt} on Calendar. */
@@ -107,8 +111,9 @@ export const calendarPt = {
     },
   },
   dropdownButton: {
-    root: { className: `${calendarTriggerClass} rounded-l-none` },
-    icon: { className: 'h-4 w-4' },
+    root: { className: `${calendarIconButtonClass} rounded-l-none border-l-0` },
+    label: { className: 'sr-only !w-0 !p-0' },
+    icon: { className: 'h-4 w-4 shrink-0' },
   },
   panel: { className: calendarPanelClass },
   header: {
@@ -119,10 +124,10 @@ export const calendarPt = {
     className: 'text-sm font-semibold text-zinc-900 dark:text-zinc-50',
   },
   previousButton: {
-    root: { className: `${calendarTriggerClass} !w-9 !px-0` },
+    root: { className: `${calendarNavButtonClass} !w-9 !px-0` },
   },
   nextButton: {
-    root: { className: `${calendarTriggerClass} !w-9 !px-0` },
+    root: { className: `${calendarNavButtonClass} !w-9 !px-0` },
   },
   tableHeaderCell: {
     className: 'px-1 py-1 text-xs font-medium text-zinc-500 dark:text-zinc-400',

@@ -107,4 +107,19 @@ describe('AuthGate', () => {
       expect(notFound).toHaveBeenCalled();
     });
   });
+
+  it('calls notFound when user visits customers route', async () => {
+    setAuthSession('token', UserRole.User);
+    vi.mocked(usePathname).mockReturnValue('/customers');
+
+    render(
+      <AuthGate>
+        <div>Customers</div>
+      </AuthGate>,
+    );
+
+    await waitFor(() => {
+      expect(notFound).toHaveBeenCalled();
+    });
+  });
 });

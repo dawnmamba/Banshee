@@ -366,3 +366,50 @@ export type AdminDashboardResponse = {
 export async function fetchAdminDashboard(): Promise<AdminDashboardResponse> {
   return apiFetch<AdminDashboardResponse>('/admin/dashboard');
 }
+
+export type TransactionImportResult = {
+  customerCount: number;
+  transactionCount: number;
+};
+
+export type TransactionImportSummaryRow = {
+  customerId: string;
+  accountShortName: string;
+  accountBranch: string;
+  currency: string;
+  availableBalance: string;
+  transactionCount: number;
+};
+
+export type ImportedCustomerTransaction = {
+  uniqueKey: string;
+  postingDate: string;
+  transactionCodeName: string;
+  postingAmount: string;
+  runningBalance: string;
+};
+
+export async function importTransactionHistory(
+  payload: unknown,
+): Promise<TransactionImportResult> {
+  return apiFetch<TransactionImportResult>('/customers/import', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function fetchTransactionImportSummary(): Promise<
+  TransactionImportSummaryRow[]
+> {
+  return apiFetch<TransactionImportSummaryRow[]>(
+    '/customers/summary',
+  );
+}
+
+export async function fetchImportedCustomerTransactions(
+  customerId: string,
+): Promise<ImportedCustomerTransaction[]> {
+  return apiFetch<ImportedCustomerTransaction[]>(
+    `/customers/${encodeURIComponent(customerId)}/transactions`,
+  );
+}

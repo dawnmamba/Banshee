@@ -10,7 +10,12 @@ export const PUBLIC_PATHS = ['/login', '/register'] as const;
 export const USER_PATHS = ['/', '/profile', '/welcome', '/health'] as const;
 
 export function isAdminPath(pathname: string): boolean {
-  return pathname === '/admin' || pathname.startsWith('/admin/');
+  return (
+    pathname === '/admin' ||
+    pathname.startsWith('/admin/') ||
+    pathname === '/customers' ||
+    pathname.startsWith('/customers/')
+  );
 }
 
 export function isUserPath(pathname: string): boolean {

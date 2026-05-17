@@ -176,9 +176,22 @@ export const transactionsTabSelectPt = {
   label: { className: 'text-sm font-medium' },
 };
 
+const fileUploadChooseClass = `${secondaryButtonClass} !w-auto`;
+
 export const authPt = {
   inputtext: {
     root: { className: inputClass },
+  },
+  fileupload: {
+    root: { className: 'flex flex-wrap items-center gap-3' },
+    input: { className: 'sr-only' },
+    chooseButton: {
+      root: { className: fileUploadChooseClass },
+      label: { className: 'text-sm font-medium' },
+    },
+    label: {
+      className: 'text-sm text-zinc-600 dark:text-zinc-400',
+    },
   },
   iconfield: {
     root: { className: iconFieldClass },

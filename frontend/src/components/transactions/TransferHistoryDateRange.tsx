@@ -33,8 +33,8 @@ export function TransferHistoryDateRange({
 }: TransferHistoryDateRangeProps) {
   return (
     <div className="space-y-4 rounded-xl border border-zinc-200 bg-white px-6 py-5 dark:border-zinc-800 dark:bg-zinc-900 sm:px-8">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0 w-full sm:max-w-[min(100%,20rem)]">
           <FieldLabel htmlFor="history-start-date" required>
             Start date
           </FieldLabel>
@@ -46,17 +46,23 @@ export function TransferHistoryDateRange({
             maxDate={endDate ?? undefined}
           />
         </div>
-        <div>
-          <FieldLabel htmlFor="history-end-date" required>
-            End date
-          </FieldLabel>
-          <Calendar
-            {...calendarProps}
-            inputId="history-end-date"
-            value={endDate}
-            onChange={(e) => onEndDateChange((e.value as Date | null) ?? null)}
-            minDate={startDate ?? undefined}
-          />
+        <div className="min-w-0 w-full sm:max-w-[min(100%,20rem)] sm:ml-auto">
+          <div className="flex flex-col sm:items-end">
+            <FieldLabel htmlFor="history-end-date" required>
+              End date
+            </FieldLabel>
+            <div className="w-full">
+              <Calendar
+                {...calendarProps}
+                inputId="history-end-date"
+                value={endDate}
+                onChange={(e) =>
+                  onEndDateChange((e.value as Date | null) ?? null)
+                }
+                minDate={startDate ?? undefined}
+              />
+            </div>
+          </div>
         </div>
       </div>
       <Button

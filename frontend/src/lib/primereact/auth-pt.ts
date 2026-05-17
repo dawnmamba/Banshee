@@ -97,7 +97,7 @@ const calendarTriggerClass =
 /** PrimeReact Calendar (date picker) — use via pt={calendarPt} on Calendar. */
 export const calendarPt = {
   root: {
-    className: 'relative flex w-full max-w-full items-stretch',
+    className: 'relative flex w-full min-w-0 items-stretch',
   },
   input: {
     root: {

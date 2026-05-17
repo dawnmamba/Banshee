@@ -35,7 +35,7 @@ describe('getDatabaseConfig', () => {
       join(__dirname, '..', '**', '*.entity.{ts,js}'),
     ]);
     expect(config.migrations).toEqual([
-      join(__dirname, 'migrations', '*.{ts,js}'),
+      join(__dirname, 'migrations', '[0-9]*-*.{ts,js}'),
     ]);
   });
 

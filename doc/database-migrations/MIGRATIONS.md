@@ -188,6 +188,8 @@ Review the generated SQL carefully before committing. This project’s default w
 | Symptom | Likely cause | What to do |
 |---------|----------------|------------|
 | `migration:show` hangs or times out | Postgres not running or wrong `DB_*` in `.env` | Start Postgres; verify host/port/credentials |
+| `The system cannot find the path specified` (Windows) | `typeorm-ts-node-commonjs` shim calls `/bin/sh` | Use the project `npm run migration:*` scripts (they invoke `node -r ts-node/register` directly) |
+| `inconsistent types deduced for parameter $1` | Reused `$n` in INSERT…SELECT without casts | Cast parameters (e.g. `$1::varchar`) to match column types |
 | Migration fails on startup | SQL error in `up`, or DB already partially changed | Fix migration or DB state; use `migration:revert` locally if safe |
 | `relation already exists` | Table created outside migrations | Add a baseline migration or align DB manually, then migrate forward |
 | No migrations run | Empty `migrations/` folder | Expected until the first migration is added |

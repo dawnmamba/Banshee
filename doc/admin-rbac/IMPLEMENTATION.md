@@ -47,6 +47,8 @@ Document seeded admin in `backend/.env.example` (comments only; no secrets).
 | T6 | FR-9 | frontend | `AuthGate.test.tsx` | wrong role → notFound |
 | T7 | FR-8 | frontend | `LoginForm.test.tsx` | admin redirects to `/admin` |
 | T8 | FR-9 | frontend | `route-groups.test.ts` | path group helpers |
+| T9 | BUG-001 | backend | `database-cli.spec.ts` | migration CLI script is Windows-compatible |
+| T10 | BUG-001 | backend | `add-user-role-and-seed-admin.migration.spec.ts` | admin seed SQL uses varchar casts |
 
 ## Files
 
@@ -95,6 +97,8 @@ Document seeded admin in `backend/.env.example` (comments only; no secrets).
 - [x] T6 — AuthGate notFound
 - [x] T7 — login redirect by role
 - [x] T8 — route group helpers
+- [x] T9 — migration CLI script (BUG-001)
+- [x] T10 — admin seed migration SQL casts (BUG-001)
 
 ## Status
 

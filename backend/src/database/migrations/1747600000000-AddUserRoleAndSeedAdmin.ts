@@ -23,9 +23,9 @@ export class AddUserRoleAndSeedAdmin1747600000000 implements MigrationInterface 
         "last_name",
         "role"
       )
-      SELECT $1, $2, $3, $4, $5
+      SELECT $1::varchar, $2::varchar, $3::varchar, $4::varchar, $5::varchar
       WHERE NOT EXISTS (
-        SELECT 1 FROM "users" WHERE "email" = $1
+        SELECT 1 FROM "users" WHERE "email" = $1::varchar
       )
     `,
       [ADMIN_EMAIL, passwordHash, 'System', 'Administrator', 'admin'],

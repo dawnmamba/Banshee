@@ -233,6 +233,76 @@ export class AccountBalanceError extends Error {
   }
 }
 
+export type TransactionHistoryItem = {
+  id: string;
+  postingDate: string;
+  displayDate: string;
+  formattedAmount: string;
+  currency: string;
+  transactionName: string;
+  statusLabel: string;
+  reference: string | null;
+  summary: string;
+  isDebit: boolean;
+};
+
+export type TransactionHistoryResponse = {
+  dateFrom: string;
+  dateTo: string;
+  transactions: TransactionHistoryItem[];
+};
+
+export class TransactionHistoryError extends Error {
+  constructor(
+    message: string,
+    readonly kind: 'missing_account' | 'unavailable' | 'invalid_range',
+  ) {
+    super(message);
+    this.name = 'TransactionHistoryError';
+  }
+}
+
+export async function fetchTransactionHistory(
+  startDate: string,
+  endDate: string,
+): Promise<TransactionHistoryResponse> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  const token = getAuthToken();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const params = new URLSearchParams({ startDate, endDate });
+  const res = await fetch(`${API_BASE_URL}/transactions/history?${params}`, {
+    headers,
+    cache: 'no-store',
+  });
+
+  if (!res.ok) {
+    const message = await parseApiErrorMessage(res);
+    if (
+      res.status === 400 &&
+      message.toLowerCase().includes('account number in profile')
+    ) {
+      throw new TransactionHistoryError(message, 'missing_account');
+    }
+    if (
+      res.status === 400 &&
+      message.toLowerCase().includes('start date must be')
+    ) {
+      throw new TransactionHistoryError(message, 'invalid_range');
+    }
+    throw new TransactionHistoryError(
+      message || 'Unable to retrieve transaction history. Please try again.',
+      'unavailable',
+    );
+  }
+
+  return res.json() as Promise<TransactionHistoryResponse>;
+}
+
 export type WelcomeResponse = {
   message: string;
 };

@@ -24,3 +24,14 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* PrimeReact Calendar (unstyled): inputs omit p-calendar/p-inputtext classes */
+#history-start-date,
+#history-end-date {
+  color: #18181b;
+}
+
+[data-theme='dark'] #history-start-date,
+[data-theme='dark'] #history-end-date {
+  color: #fafafa;
+}

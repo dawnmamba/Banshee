@@ -9,6 +9,7 @@ import { WelcomeMessageModule } from './welcome-message/welcome-message.module';
 import { BankingApiModule } from './banking-api/banking-api.module';
 import { AccountBalanceModule } from './account-balance/account-balance.module';
 import { AdminModule } from './admin/admin.module';
+import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AdminModule } from './admin/admin.module';
     UserProfileModule,
     WelcomeMessageModule,
     AccountBalanceModule,
+    TransactionHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

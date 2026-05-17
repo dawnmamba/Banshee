@@ -19,6 +19,10 @@ describe('Navbar', () => {
     render(<Navbar />);
 
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: 'Transactions' })).toHaveAttribute(
+      'href',
+      '/transactions',
+    );
     expect(screen.getByRole('link', { name: 'Health' })).toHaveAttribute(
       'href',
       '/health',

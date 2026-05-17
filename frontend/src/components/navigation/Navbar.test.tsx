@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { Navbar } from './Navbar';
 
 vi.mock('next/navigation', () => ({
-  usePathname: () => '/health',
+  usePathname: () => '/transactions',
 }));
 
 vi.mock('@/components/user-profile-menu/UserProfileMenu', () => ({
@@ -15,7 +15,7 @@ describe('Navbar', () => {
     cleanup();
   });
 
-  it('renders nav links', () => {
+  it('renders Home and Transactions nav links only', () => {
     render(<Navbar />);
 
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
@@ -23,21 +23,16 @@ describe('Navbar', () => {
       'href',
       '/transactions',
     );
-    expect(screen.getByRole('link', { name: 'Health' })).toHaveAttribute(
-      'href',
-      '/health',
-    );
-    expect(screen.getByRole('link', { name: 'Welcome' })).toHaveAttribute(
-      'href',
-      '/welcome',
-    );
+    expect(screen.queryByRole('link', { name: 'Health' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Welcome' })).not.toBeInTheDocument();
   });
 
   it('marks the active route', () => {
     render(<Navbar />);
 
-    const healthLink = screen.getByRole('link', { name: 'Health' });
-    expect(healthLink).toHaveAttribute('aria-current', 'page');
-    expect(healthLink.className).toContain('font-medium');
+    const transactionsLink = screen.getByRole('link', { name: 'Transactions' });
+    expect(transactionsLink).toHaveAttribute('aria-current', 'page');
+    expect(transactionsLink.className).toContain('font-medium');
   });
 });
+

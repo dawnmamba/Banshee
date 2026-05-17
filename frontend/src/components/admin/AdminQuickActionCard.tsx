@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { adminCardClass, adminIconWrapClass } from './admin-ui';
+import { adminCardClass, adminCardGlowClass, adminIconWrapClass } from './admin-ui';
 
 type AdminQuickActionCardProps = {
   href: string;
@@ -19,22 +19,18 @@ export function AdminQuickActionCard({
   return (
     <Link
       href={href}
-      className={`${adminCardClass} group flex flex-col gap-4 p-6 transition hover:border-zinc-300 hover:shadow-md dark:hover:border-zinc-600`}
+      className={`${adminCardClass} ${adminCardGlowClass} group relative flex flex-col gap-4 p-6 transition hover:border-cyan-500/25`}
     >
       <div className="flex items-start gap-4">
         <div className={adminIconWrapClass}>
           <i className={`${iconClass} text-lg`} aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
-            {title}
-          </h3>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            {description}
-          </p>
+          <h3 className="text-base font-semibold text-white">{title}</h3>
+          <p className="mt-1 text-sm text-slate-400">{description}</p>
         </div>
       </div>
-      <span className="text-sm font-medium text-zinc-900 group-hover:underline dark:text-zinc-100">
+      <span className="text-sm font-medium text-cyan-300 group-hover:text-cyan-200">
         {cta} →
       </span>
     </Link>

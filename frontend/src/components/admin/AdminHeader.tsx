@@ -2,34 +2,43 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { headerClass, linkMutedClass } from '@/lib/primereact/auth-pt';
+import {
+  portalHeaderClass,
+  portalNavLinkActiveClass,
+  portalNavLinkClass,
+} from '@/lib/theme/portal-theme';
 import { LogoutButton } from '@/components/user-auth/LogoutButton';
-
-const navLinkClass = (active: boolean) =>
-  active
-    ? 'text-sm font-semibold text-zinc-900 dark:text-zinc-50'
-    : `${linkMutedClass} text-sm`;
+import { portalButtonOutlineClass } from '@/lib/theme/portal-theme';
 
 export function AdminHeader() {
   const pathname = usePathname();
 
   return (
-    <header className={headerClass}>
+    <header className={portalHeaderClass}>
       <nav className="absolute left-8 flex items-center gap-6">
-        <Link href="/admin" className={navLinkClass(pathname === '/admin')}>
+        <Link
+          href="/admin"
+          className={
+            pathname === '/admin' ? portalNavLinkActiveClass : portalNavLinkClass
+          }
+        >
           Dashboard
         </Link>
         <Link
           href="/admin/users"
-          className={navLinkClass(pathname === '/admin/users')}
+          className={
+            pathname === '/admin/users'
+              ? portalNavLinkActiveClass
+              : portalNavLinkClass
+          }
         >
           Users
         </Link>
       </nav>
-      <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+      <span className="text-sm font-semibold tracking-wide text-slate-200">
         Banshee Admin
       </span>
-      <LogoutButton />
+      <LogoutButton className={portalButtonOutlineClass} />
     </header>
   );
 }

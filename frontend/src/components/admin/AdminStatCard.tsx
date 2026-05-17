@@ -1,4 +1,8 @@
-import { adminCardClass, adminIconWrapClass } from './admin-ui';
+import {
+  adminCardClass,
+  adminCardGlowClass,
+  adminIconWrapClass,
+} from './admin-ui';
 
 type AdminStatCardProps = {
   label: string;
@@ -15,14 +19,12 @@ export function AdminStatCard({
 }: AdminStatCardProps) {
   return (
     <div
-      className={`${adminCardClass} flex flex-col gap-4 p-6 transition hover:border-zinc-300 dark:hover:border-zinc-600`}
+      className={`${adminCardClass} ${adminCardGlowClass} relative flex flex-col gap-4 p-6 transition hover:border-cyan-500/20`}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-            {label}
-          </p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <p className="text-sm font-medium text-slate-500">{label}</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-white">
             {value}
           </p>
         </div>
@@ -30,9 +32,9 @@ export function AdminStatCard({
           <i className={`${iconClass} text-lg`} aria-hidden />
         </div>
       </div>
-      {hint ? (
-        <p className="text-xs text-zinc-500 dark:text-zinc-500">{hint}</p>
-      ) : null}
+      {hint ? <p className="text-xs text-slate-600">{hint}</p> : null}
     </div>
   );
 }
+
+

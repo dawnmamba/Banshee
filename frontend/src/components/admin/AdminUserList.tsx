@@ -14,10 +14,12 @@ import { SEED_ADMIN_EMAIL } from '@/lib/admin';
 import { UserRole } from '@/lib/roles';
 import {
   errorMessagePt,
+  inputClass,
   labelClass,
   secondaryButtonClass,
   successMessagePt,
 } from '@/lib/primereact/auth-pt';
+import { adminContainerClass, adminPageClass } from './admin-ui';
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB');
@@ -104,7 +106,8 @@ export function AdminUserList() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8">
+    <div className={adminPageClass}>
+      <div className={adminContainerClass}>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
           Users
@@ -117,9 +120,9 @@ export function AdminUserList() {
 
       <form
         onSubmit={handleSearch}
-        className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end"
+        className="mb-6 grid w-full grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
       >
-        <div className="flex-1">
+        <div className="min-w-0">
           <label htmlFor="user-search" className={labelClass}>
             Search users
           </label>
@@ -128,13 +131,13 @@ export function AdminUserList() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Name or email"
-            className="w-full"
+            pt={{ root: { className: inputClass } }}
           />
         </div>
         <Button
           type="submit"
           label="Search"
-          className={secondaryButtonClass}
+          className={`${secondaryButtonClass} w-full sm:w-auto`}
           disabled={loading}
         />
       </form>
@@ -267,6 +270,7 @@ export function AdminUserList() {
               ))}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

@@ -351,3 +351,18 @@ export async function updateAdminUserRole(
     body: JSON.stringify({ role }),
   });
 }
+
+export type AdminDashboardStats = {
+  totalUsers: number;
+  adminCount: number;
+  userCount: number;
+};
+
+export type AdminDashboardResponse = {
+  message: string;
+  stats: AdminDashboardStats;
+};
+
+export async function fetchAdminDashboard(): Promise<AdminDashboardResponse> {
+  return apiFetch<AdminDashboardResponse>('/admin/dashboard');
+}

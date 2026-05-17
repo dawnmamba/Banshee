@@ -6,6 +6,7 @@ import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { AccountBalanceService } from '../src/account-balance/account-balance.service';
 import { UserAuthService } from '../src/user-auth/user-auth.service';
+import { UserRole } from '../src/user-auth/user-role';
 
 describe('AccountBalance (e2e)', () => {
   let app: INestApplication<App>;
@@ -27,6 +28,7 @@ describe('AccountBalance (e2e)', () => {
       email: 'e2e@example.com',
       firstName: 'Jane',
       lastName: 'Doe',
+      role: UserRole.User,
     });
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -55,7 +57,11 @@ describe('AccountBalance (e2e)', () => {
 
   it('GET /account/balance returns balance with valid token', async () => {
     const jwt = app.get(JwtService);
-    const token = jwt.sign({ sub: 'user-1', email: 'e2e@example.com' });
+    const token = jwt.sign({
+      sub: 'user-1',
+      email: 'e2e@example.com',
+      role: UserRole.User,
+    });
 
     const res = await request(app.getHttpServer())
       .get('/account/balance')

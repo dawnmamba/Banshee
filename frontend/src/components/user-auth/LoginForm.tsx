@@ -8,7 +8,8 @@ import { InputText } from 'primereact/inputtext';
 import { Message } from 'primereact/message';
 import { Password } from 'primereact/password';
 import { login } from '@/lib/api';
-import { setAuthToken } from '@/lib/auth';
+import { setAuthSession } from '@/lib/auth';
+import { getRoleHomePath } from '@/lib/roles';
 import { labelClass } from '@/lib/primereact/auth-pt';
 
 export function LoginForm() {
@@ -25,8 +26,8 @@ export function LoginForm() {
 
     try {
       const data = await login(email, password);
-      setAuthToken(data.accessToken);
-      router.replace('/');
+      setAuthSession(data.accessToken, data.user.role);
+      router.replace(getRoleHomePath(data.user.role));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {

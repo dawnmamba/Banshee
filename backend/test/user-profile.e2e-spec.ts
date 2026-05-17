@@ -1,9 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { UserProfileService } from '../src/user-profile/user-profile.service';
+import { UserAuthService } from '../src/user-auth/user-auth.service';
+import { UserRole } from '../src/user-auth/user-role';
 
 describe('UserProfile (e2e)', () => {
   let app: INestApplication<App>;
@@ -12,6 +15,9 @@ describe('UserProfile (e2e)', () => {
     updateAccount: jest.fn(),
     updatePersonal: jest.fn(),
     changePassword: jest.fn(),
+  };
+  const authService = {
+    getProfile: jest.fn(),
   };
 
   const fullProfile = {
@@ -32,12 +38,21 @@ describe('UserProfile (e2e)', () => {
     profileService.updateAccount.mockResolvedValue(fullProfile);
     profileService.updatePersonal.mockResolvedValue(fullProfile);
     profileService.changePassword.mockResolvedValue({ ok: true });
+    authService.getProfile.mockResolvedValue({
+      id: 'user-1',
+      email: 'e2e@example.com',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      role: UserRole.User,
+    });
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
       .overrideProvider(UserProfileService)
       .useValue(profileService)
+      .overrideProvider(UserAuthService)
+      .useValue(authService)
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -56,9 +71,12 @@ describe('UserProfile (e2e)', () => {
   });
 
   it('GET /profile returns profile with valid token', async () => {
-    const { JwtService } = await import('@nestjs/jwt');
     const jwt = app.get(JwtService);
-    const token = jwt.sign({ sub: 'user-1', email: 'e2e@example.com' });
+    const token = jwt.sign({
+      sub: 'user-1',
+      email: 'e2e@example.com',
+      role: UserRole.User,
+    });
 
     const res = await request(app.getHttpServer())
       .get('/profile')
@@ -69,9 +87,12 @@ describe('UserProfile (e2e)', () => {
   });
 
   it('PATCH /profile/account updates account', async () => {
-    const { JwtService } = await import('@nestjs/jwt');
     const jwt = app.get(JwtService);
-    const token = jwt.sign({ sub: 'user-1', email: 'e2e@example.com' });
+    const token = jwt.sign({
+      sub: 'user-1',
+      email: 'e2e@example.com',
+      role: UserRole.User,
+    });
 
     await request(app.getHttpServer())
       .patch('/profile/account')

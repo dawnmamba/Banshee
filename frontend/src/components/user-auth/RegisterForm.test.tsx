@@ -3,6 +3,7 @@ import { renderWithProviders } from '@/test/render';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { RegisterForm } from './RegisterForm';
+import { UserRole } from '@/lib/roles';
 import { clearAuthToken, getAuthToken } from '@/lib/auth';
 
 const replace = vi.fn();
@@ -65,6 +66,7 @@ describe('RegisterForm', () => {
             email: 'jane@example.com',
             firstName: 'Jane',
             lastName: 'Doe',
+            role: UserRole.User,
           },
         }),
       }),

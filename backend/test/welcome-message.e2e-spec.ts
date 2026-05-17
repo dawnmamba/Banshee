@@ -4,6 +4,7 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { JwtAuthGuard } from '../src/user-auth/jwt-auth.guard';
+import { RolesGuard } from '../src/user-auth/roles.guard';
 
 describe('WelcomeMessage (e2e)', () => {
   let app: INestApplication<App>;
@@ -13,6 +14,8 @@ describe('WelcomeMessage (e2e)', () => {
       imports: [AppModule],
     })
       .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(RolesGuard)
       .useValue({ canActivate: () => true })
       .compile();
 

@@ -1,11 +1,15 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../user-auth/jwt-auth.guard';
+import { Roles } from '../user-auth/roles.decorator';
+import { RolesGuard } from '../user-auth/roles.guard';
+import { UserRole } from '../user-auth/user-role';
 import { WelcomeRequestDto } from './dto/welcome-request.dto';
 import { WelcomeResponseDto } from './dto/welcome-response.dto';
 import { WelcomeMessageService } from './welcome-message.service';
 
 @Controller('welcome')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.User)
 export class WelcomeMessageController {
   constructor(private readonly welcomeMessageService: WelcomeMessageService) {}
 

@@ -12,6 +12,9 @@ import {
 import { Request } from 'express';
 import { AuthUser } from '../user-auth/user-auth.service';
 import { JwtAuthGuard } from '../user-auth/jwt-auth.guard';
+import { Roles } from '../user-auth/roles.decorator';
+import { RolesGuard } from '../user-auth/roles.guard';
+import { UserRole } from '../user-auth/user-role';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { UpdatePersonalDto } from './dto/update-personal.dto';
@@ -20,7 +23,8 @@ import { UserProfileService } from './user-profile.service';
 type AuthenticatedRequest = Request & { user: AuthUser };
 
 @Controller('profile')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.User)
 export class UserProfileController {
   constructor(private readonly userProfileService: UserProfileService) {}
 

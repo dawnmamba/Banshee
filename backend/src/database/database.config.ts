@@ -23,7 +23,7 @@ export function getDatabaseConfig(): DataSourceOptions {
     username: requireEnv('DB_USER'),
     password: String(requireEnv('DB_PASSWORD')),
     entities: [join(__dirname, '..', '**', '*.entity.{ts,js}')],
-    migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
+    migrations: [join(__dirname, 'migrations', '[0-9]*-*.{ts,js}')],
     migrationsRun: true,
     migrationsTableName: 'typeorm_migrations',
     synchronize: false,

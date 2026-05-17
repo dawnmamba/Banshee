@@ -5,6 +5,7 @@ import { UserAuthController } from './user-auth.controller';
 import { UserAuthService } from './user-auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { buildJwtModuleOptions } from './jwt-module.options';
+import { RolesGuard } from './roles.guard';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { buildJwtModuleOptions } from './jwt-module.options';
     }),
   ],
   controllers: [UserAuthController],
-  providers: [UserAuthService, JwtStrategy],
-  exports: [UserAuthService, JwtModule],
+  providers: [UserAuthService, JwtStrategy, RolesGuard],
+  exports: [UserAuthService, JwtModule, RolesGuard],
 })
 export class UserAuthModule {}

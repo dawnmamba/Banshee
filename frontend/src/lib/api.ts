@@ -9,11 +9,14 @@ export type HealthResponse = {
   database?: string;
 };
 
+import type { UserRole } from './roles';
+
 export type AuthUser = {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
+  role: UserRole;
 };
 
 export type UserProfile = AuthUser & {

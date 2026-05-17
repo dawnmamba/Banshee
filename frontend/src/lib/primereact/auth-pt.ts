@@ -77,6 +77,11 @@ const selectButtonOptionSelectedClass =
   'flex flex-1 items-center justify-center rounded-lg border border-zinc-900 bg-zinc-900 p-2.5 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900';
 
 /** Visible labels for transaction section tabs (theme toggle keeps sr-only labels). */
+export const historySearchButtonPt = {
+  root: { className: `${buttonClass} !w-auto` },
+  label: { className: 'text-white dark:text-zinc-900' },
+};
+
 export const transactionsTabSelectPt = {
   root: { className: selectButtonRootClass },
   button: ({ context }: { context: { selected: boolean } }) => ({
@@ -143,5 +148,12 @@ export const authPt = {
         : selectButtonOptionClass,
     }),
     label: { className: 'sr-only' },
+  },
+  calendar: {
+    root: { className: 'w-full' },
+    input: { className: inputClass },
+    dropdownButton: {
+      root: { className: secondaryButtonClass },
+    },
   },
 };

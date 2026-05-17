@@ -2,70 +2,87 @@
 
 ## API contract
 
-None for this slice (frontend-only). Future work may add:
+### `GET /transactions/history?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD`
 
-- `POST /transactions/transfer/internal` — internal fund transfer proxy
-- `POST /transactions/transfer/external` — external fund transfer proxy
-- `GET /transactions/history` — transfer list
+**Auth:** Bearer JWT
+
+**Success `200`:**
+
+```json
+{
+  "dateFrom": "2021-01-01",
+  "dateTo": "2021-01-31",
+  "transactions": [
+    {
+      "id": "12102168276330000001-0000015",
+      "postingDate": "2021-02-16",
+      "displayDate": "Feb 16, 2021",
+      "formattedAmount": "LKR 100.00",
+      "currency": "LKR",
+      "transactionName": "TRANSFER - DEBIT",
+      "statusLabel": "Posted",
+      "reference": "TEST001",
+      "summary": "TRANSFER - DEBIT · TEST001",
+      "isDebit": true
+    }
+  ]
+}
+```
+
+**Missing account `400`:** `Add your account number in Profile to view transaction history.`
+
+**Invalid range `400`:** `Start date must be on or before end date.`
+
+**Banking failure `502`:** `Unable to retrieve transaction history. Please try again.`
+
+### External banking API (backend only)
+
+- Path: `/Inquiry/Account/AccountInquiry/1.0/GetAccountTransactions?AccountCategory=EXT&AccountNumber={accountNumber}&StartDate={startDate}&EndDate={endDate}`
+- Response root: `TransactionHistoryInquiryResponse`
 
 ## Test cases (TDD)
 
 | ID | Requirement | Layer | Test file | Describes |
 |----|-------------|-------|-----------|-----------|
-| T1 | FR-1, FR-6 | frontend | `Navbar.test.tsx` | Transactions link after Home, href `/transactions` |
-| T2 | FR-2, FR-3, FR-5, FR-7 | frontend | `TransactionsPage.test.tsx` | Title, tabs, default Transfer panel with Internal toggle |
-| T3 | FR-3, FR-12, FR-13 | frontend | `TransactionsPage.test.tsx` | History tab shows dummy transfer banners |
-| T12 | FR-12, FR-13 | frontend | `TransferHistoryPanel.test.tsx` | Renders all dummy records as banners |
-| T4 | FR-4 | frontend | `TransactionsPage.test.tsx` | Missing account shows Profile guidance, no tabs |
-| T5 | FR-5 | frontend | `TransactionsPage.test.tsx` | With account, tabs visible |
-| T6 | FR-7, FR-8 | frontend | `TransactionsPage.test.tsx` | Internal form fields visible by default |
-| T7 | FR-9, FR-10 | frontend | `TransactionsPage.test.tsx` | External toggle shows external fields, hides internal |
-| T8 | FR-11 | frontend | `InternalTransferForm.test.tsx` | Empty submit shows validation errors |
-| T9 | FR-11 | frontend | `InternalTransferForm.test.tsx` | Valid submit shows success message |
-| T10 | FR-11 | frontend | `ExternalTransferForm.test.tsx` | Empty submit shows validation errors |
-| T11 | FR-11 | frontend | `ExternalTransferForm.test.tsx` | Valid submit shows success message |
+| T1 | FR-1, FR-6 | frontend | `Navbar.test.tsx` | Transactions link after Home |
+| T2 | FR-2, FR-3, FR-5, FR-7 | frontend | `TransactionsPage.test.tsx` | Default Transfer panel |
+| T3 | FR-3, FR-12–FR-14 | frontend | `TransactionsPage.test.tsx` | History tab loads API banners |
+| T4 | FR-4, FR-15 | frontend | `TransactionsPage.test.tsx` | Missing account on page |
+| T5 | FR-5 | frontend | `TransactionsPage.test.tsx` | Tabs when account present |
+| T6 | FR-7, FR-8 | frontend | `TransactionsPage.test.tsx` | Internal form default |
+| T7 | FR-9, FR-10 | frontend | `TransactionsPage.test.tsx` | External toggle |
+| T8 | FR-11 | frontend | `InternalTransferForm.test.tsx` | Internal validation |
+| T9 | FR-11 | frontend | `InternalTransferForm.test.tsx` | Internal success |
+| T10 | FR-11 | frontend | `ExternalTransferForm.test.tsx` | External validation |
+| T11 | FR-11 | frontend | `ExternalTransferForm.test.tsx` | External success |
+| T12 | FR-12–FR-14 | frontend | `TransferHistoryPanel.test.tsx` | Banners, search, missing account |
+| T13 | FR-13 | backend | `build-transaction-history-path.spec.ts` | Banking path builder |
+| T14 | FR-13, FR-14 | backend | `map-transaction-history.spec.ts` | Maps API transactions |
+| T15 | FR-13, FR-15 | backend | `transaction-history.service.spec.ts` | Service + account gating |
+| T16 | FR-13 | backend | `transaction-history.controller.spec.ts` | Controller |
+| T17 | FR-13 | backend | `test/transaction-history.e2e-spec.ts` | HTTP 200 with JWT |
 
 ## Files
 
 ### Backend
 
-None (deferred).
+- `backend/src/transaction-history/*`
+- `backend/src/app.module.ts`
 
 ### Frontend
 
-- `frontend/src/components/navigation/nav-routes.ts`
-- `frontend/src/components/navigation/Navbar.test.tsx`
-- `frontend/src/components/transactions/TransactionsPage.tsx`
-- `frontend/src/components/transactions/TransactionsPage.test.tsx`
-- `frontend/src/components/transactions/FundTransferPanel.tsx`
-- `frontend/src/components/transactions/InternalTransferForm.tsx`
-- `frontend/src/components/transactions/InternalTransferForm.test.tsx`
-- `frontend/src/components/transactions/ExternalTransferForm.tsx`
-- `frontend/src/components/transactions/ExternalTransferForm.test.tsx`
-- `frontend/src/components/transactions/transfer-validation.ts`
-- `frontend/src/components/transactions/dummy-transfer-history.ts`
-- `frontend/src/components/transactions/TransferHistoryBanner.tsx`
 - `frontend/src/components/transactions/TransferHistoryPanel.tsx`
-- `frontend/src/components/transactions/TransferHistoryPanel.test.tsx`
-- `frontend/src/app/transactions/page.tsx`
-- `frontend/src/lib/primereact/auth-pt.ts` (existing `transactionsTabSelectPt`)
+- `frontend/src/components/transactions/TransferHistoryDateRange.tsx`
+- `frontend/src/components/transactions/TransferHistoryBanner.tsx`
+- `frontend/src/components/transactions/transfer-history-dates.ts`
+- `frontend/src/lib/api.ts` (`fetchTransactionHistory`)
+- `frontend/src/lib/primereact/auth-pt.ts` (`calendar`, `historySearchButtonPt`)
 
 ## TDD checklist
 
-- [x] T1 — Navbar test
-- [x] T2 — TransactionsPage default tab
-- [x] T3 — Tab switch to History
-- [x] T4 — Missing account
-- [x] T5 — With account
-- [x] T6 — Internal form default
-- [x] T7 — External toggle
-- [x] T8 — Internal validation
-- [x] T9 — Internal success
-- [x] T10 — External validation
-- [x] T11 — External success
-- [x] T3 — History tab dummy banners (updated)
-- [x] T12 — TransferHistoryPanel banners
+- [x] T1–T12 — prior + history UI tests
+- [x] T13–T17 — backend transaction history
 
 ## Status
 
-Complete. History dummy banners slice; Phase 6 checks passed.
+Complete. Live transaction history slice; Phase 6 checks passed.

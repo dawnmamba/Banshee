@@ -37,8 +37,10 @@ Users need a dedicated place in the app for money movement and past transfers. T
 9. **FR-9** — **External** form fields: Beneficiary name (required), Routing number (required), Account number (required), Amount (required, positive number), Memo (optional).
 10. **FR-10** — Only one transfer form is visible at a time; switching type shows the other form.
 11. **FR-11** — Submit validates required fields; on success shows a non-destructive success message (no API call).
-12. **FR-12** — History panel lists static dummy transfer records as stacked banner cards (no API).
-13. **FR-13** — Each history banner shows date, status badge, amount, transfer type (Internal/External), and summary line.
+12. **FR-12** — History panel provides **Start date** and **End date** selectors (PrimeReact Calendar) and a **Search** control; default range is the last 30 days.
+13. **FR-13** — On search (and initial load), backend proxies `GetAccountTransactions` using profile `accountNumber`, `AccountCategory=EXT`, and selected dates (`YYYY-MM-DD`).
+14. **FR-14** — Each transaction renders as a zinc banner card: display date, status label, formatted amount (debit in red), and summary (`Transaction_Code_Name · reference`).
+15. **FR-15** — Empty API result shows a friendly “no transactions” banner; API errors show retry; missing account number shows Profile link (same gating as balance).
 
 ## UI requirements
 
@@ -50,7 +52,7 @@ Users need a dedicated place in the app for money movement and past transfers. T
 ## Non-goals
 
 - Backend routes or banking API proxy for transfers.
-- Live transfer history from banking API or persistence.
+- Persisting custom date-range preferences.
 - Real fund movement or OTP / 2FA.
 
 ## Success metrics

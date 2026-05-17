@@ -6,11 +6,32 @@ import { TransactionsPage } from './TransactionsPage';
 
 vi.mock('@/lib/api', () => ({
   fetchProfile: vi.fn(),
+  fetchTransactionHistory: vi.fn(),
 }));
 
-import { fetchProfile } from '@/lib/api';
+import { fetchProfile, fetchTransactionHistory } from '@/lib/api';
 
 const mockFetchProfile = vi.mocked(fetchProfile);
+const mockFetchTransactionHistory = vi.mocked(fetchTransactionHistory);
+
+const historyResponse = {
+  dateFrom: '2021-01-01',
+  dateTo: '2021-01-31',
+  transactions: [
+    {
+      id: 'tx-1',
+      postingDate: '2021-02-16',
+      displayDate: 'Feb 16, 2021',
+      formattedAmount: 'LKR 100.00',
+      currency: 'LKR',
+      transactionName: 'TRANSFER - DEBIT',
+      statusLabel: 'Posted',
+      reference: 'TEST001',
+      summary: 'TRANSFER - DEBIT · TEST001',
+      isDebit: true,
+    },
+  ],
+};
 
 const profileWithAccount = {
   id: '1',
@@ -37,6 +58,8 @@ describe('TransactionsPage', () => {
 
   beforeEach(() => {
     mockFetchProfile.mockReset();
+    mockFetchTransactionHistory.mockReset();
+    mockFetchTransactionHistory.mockResolvedValue(historyResponse);
   });
 
   it('renders title and Transfer panel by default when account exists', async () => {
@@ -65,8 +88,9 @@ describe('TransactionsPage', () => {
 
     expect(
       await screen.findAllByTestId('transfer-history-banner'),
-    ).toHaveLength(4);
-    expect(screen.getByText('$150.00')).toBeInTheDocument();
+    ).toHaveLength(1);
+    expect(screen.getByText(/transfer - debit · test001/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/start date/i)).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Internal' }),
     ).not.toBeInTheDocument();

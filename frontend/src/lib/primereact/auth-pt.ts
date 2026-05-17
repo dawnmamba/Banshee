@@ -86,7 +86,10 @@ const calendarPanelClass =
   'z-[1100] mt-1 min-w-[18rem] rounded-lg border border-zinc-300 bg-white p-3 shadow-lg dark:border-zinc-600 dark:bg-zinc-950';
 
 const calendarDayClass =
-  'flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-sm text-zinc-800 transition hover:bg-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-800 aria-selected:bg-zinc-900 aria-selected:text-white aria-selected:hover:bg-zinc-800 dark:aria-selected:bg-zinc-100 dark:aria-selected:text-zinc-900';
+  'flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-sm text-zinc-800 transition hover:bg-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-800';
+
+const calendarDaySelectedClass =
+  'bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200';
 
 export const calendarInputClass = `${inputClass} min-w-0 w-full flex-1 rounded-r-none border-r-0 !text-zinc-900 placeholder:text-zinc-400 dark:!text-zinc-50 dark:placeholder:text-zinc-500`;
 
@@ -128,9 +131,19 @@ export const calendarPt = {
     className: 'block text-center',
   },
   day: { className: 'p-0 text-center' },
-  dayLabel: {
-    className: calendarDayClass,
-  },
+  dayLabel: ({
+    context,
+  }: {
+    context?: { selected?: boolean; disabled?: boolean };
+  }) => ({
+    className: [
+      calendarDayClass,
+      context?.selected ? calendarDaySelectedClass : '',
+      context?.disabled ? 'cursor-not-allowed opacity-40 hover:bg-transparent' : '',
+    ]
+      .filter(Boolean)
+      .join(' '),
+  }),
   monthTitle: {
     className: 'cursor-pointer text-sm font-medium text-zinc-800 dark:text-zinc-200',
   },

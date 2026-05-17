@@ -413,3 +413,21 @@ export async function fetchImportedCustomerTransactions(
     `/customers/${encodeURIComponent(customerId)}/transactions`,
   );
 }
+
+export type FraudFlaggedCustomer = {
+  customerId: string;
+  reason: string;
+};
+
+export type FraudAnalysisResponse = {
+  riskLevel: 'low' | 'medium' | 'high';
+  fraudDetected: boolean;
+  flaggedCustomers: FraudFlaggedCustomer[];
+  narrative: string;
+};
+
+export async function runFraudAnalysis(): Promise<FraudAnalysisResponse> {
+  return apiFetch<FraudAnalysisResponse>('/customers/fraud-analysis', {
+    method: 'POST',
+  });
+}

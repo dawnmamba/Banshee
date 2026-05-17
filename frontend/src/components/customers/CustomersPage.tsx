@@ -10,6 +10,7 @@ import {
   type TransactionImportSummaryRow,
 } from '@/lib/api';
 import { secondaryButtonClass } from '@/lib/primereact/auth-pt';
+import { FraudDetectionPanel } from './FraudDetectionPanel';
 import { TransactionImportPanel } from './TransactionImportPanel';
 
 export function CustomersPage() {
@@ -100,9 +101,14 @@ export function CustomersPage() {
       </section>
 
       <section className="rounded-2xl border border-black/[.08] bg-white p-6 shadow-sm dark:border-white/[.145] dark:bg-zinc-950">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-          Imported customers
-        </h2>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+            Imported customers
+          </h2>
+          <FraudDetectionPanel
+            hasCustomers={!loadingSummary && summary.length > 0}
+          />
+        </div>
 
         {error && (
           <div className="mt-4">

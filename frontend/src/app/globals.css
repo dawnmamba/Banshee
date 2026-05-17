@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* PrimeReact Calendar (unstyled): ensure input text is readable */
+.p-calendar .p-inputtext {
+  color: #18181b;
+}
+
+[data-theme='dark'] .p-calendar .p-inputtext {
+  color: #fafafa;
+}

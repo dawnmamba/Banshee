@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
+import { AdminService } from '../src/admin/admin.service';
 import { UserAuthService } from '../src/user-auth/user-auth.service';
 import { UserRole } from '../src/user-auth/user-role';
 
@@ -11,6 +12,9 @@ describe('Admin RBAC (e2e)', () => {
   let app: INestApplication<App>;
   const authService = {
     getProfile: jest.fn(),
+  };
+  const adminService = {
+    getDashboard: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -33,11 +37,18 @@ describe('Admin RBAC (e2e)', () => {
       });
     });
 
+    adminService.getDashboard.mockResolvedValue({
+      message: 'Admin dashboard',
+      stats: { totalUsers: 1, adminCount: 1, userCount: 0 },
+    });
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
       .overrideProvider(UserAuthService)
       .useValue(authService)
+      .overrideProvider(AdminService)
+      .useValue(adminService)
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -60,7 +71,10 @@ describe('Admin RBAC (e2e)', () => {
       .get('/admin/dashboard')
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
-      .expect({ message: 'Admin dashboard' });
+      .expect({
+        message: 'Admin dashboard',
+        stats: { totalUsers: 1, adminCount: 1, userCount: 0 },
+      });
   });
 
   it('forbids user on /admin/dashboard', async () => {

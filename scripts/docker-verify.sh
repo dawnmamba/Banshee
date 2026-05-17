@@ -170,21 +170,21 @@ run_http_e2e() {
   echo "$body" | grep -q '"status":"ok"' || fail "health body missing status ok"
   echo "$body" | grep -q '"database":"up"' || fail "health body missing database up"
 
-  log "HTTP e2e: POST $api/welcome (valid)"
-  code="$(curl -s -o "$tmp" -w '%{http_code}' -X POST "$api/welcome" \
+  log "HTTP e2e: POST $api/auth/login (valid)"
+  code="$(curl -s -o "$tmp" -w '%{http_code}' -X POST "$api/auth/login" \
     -H "Content-Type: application/json" \
-    -d '{"firstName":"Test","lastName":"User"}')" || fail "welcome POST failed"
-  [[ "$code" == "201" ]] || fail "welcome POST expected 201 got $code"
-  grep -q 'Welcome, Test User' "$tmp" || fail "welcome message mismatch"
+    -d '{"email":"admin@banshee.local","password":"BansheeAdmin123!"}')" || fail "auth login POST failed"
+  [[ "$code" == "200" || "$code" == "201" ]] || fail "auth login expected 200/201 got $code"
+  grep -q 'accessToken' "$tmp" || fail "auth login response missing accessToken"
 
-  log "HTTP e2e: POST $api/welcome (empty firstName)"
-  code="$(curl -s -o /dev/null -w '%{http_code}' -X POST "$api/welcome" \
+  log "HTTP e2e: POST $api/auth/login (invalid password)"
+  code="$(curl -s -o /dev/null -w '%{http_code}' -X POST "$api/auth/login" \
     -H "Content-Type: application/json" \
-    -d '{"firstName":"","lastName":"Doe"}')" || fail "welcome validation request failed"
-  [[ "$code" == "400" ]] || fail "welcome empty firstName expected 400 got $code"
+    -d '{"email":"admin@banshee.local","password":"wrong-password"}')" || fail "auth login invalid request failed"
+  [[ "$code" == "401" ]] || fail "auth login invalid password expected 401 got $code"
 
-  log "HTTP e2e: CORS preflight on $api/welcome"
-  cors="$(curl -s -D - -o /dev/null -X OPTIONS "$api/welcome" \
+  log "HTTP e2e: CORS preflight on $api/auth/login"
+  cors="$(curl -s -D - -o /dev/null -X OPTIONS "$api/auth/login" \
     -H "Origin: $CORS_ORIGIN" \
     -H "Access-Control-Request-Method: POST")" || fail "CORS preflight failed"
   echo "$cors" | grep -qi "access-control-allow-origin:" || fail "CORS headers missing"
@@ -284,7 +284,7 @@ echo "  Build is SAFE"
 echo "=============================================="
 echo "  - Docker images built: $BACKEND_IMAGE, $FRONTEND_IMAGE"
 echo "  - Containers ran on ports $PORT (API), $FRONTEND_PORT (UI)"
-echo "  - Docker HTTP e2e passed (health, welcome, CORS, frontend)"
+echo "  - Docker HTTP e2e passed (health, auth login, CORS, frontend)"
 echo "  - Backend Jest e2e passed"
 echo "=============================================="
 exit 0

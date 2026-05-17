@@ -1,13 +1,14 @@
 import { cleanup, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderWithProviders } from '@/test/render';
-import { setAuthToken } from '@/lib/auth';
+import { UserRole } from '@/lib/roles';
+import { setAuthSession } from '@/lib/auth';
 import { HomePage } from './HomePage';
 
 describe('HomePage', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    setAuthToken('test-token');
+    setAuthSession('test-token', UserRole.User);
   });
 
   afterEach(() => {
@@ -27,6 +28,7 @@ describe('HomePage', () => {
               email: 'a@b.com',
               firstName: 'Jane',
               lastName: 'Doe',
+              role: UserRole.User,
             }),
           });
         }

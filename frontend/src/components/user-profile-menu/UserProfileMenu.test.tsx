@@ -3,7 +3,8 @@ import { renderWithProviders } from '@/test/render';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { UserProfileMenu } from './UserProfileMenu';
-import { setAuthToken } from '@/lib/auth';
+import { UserRole } from '@/lib/roles';
+import { setAuthSession } from '@/lib/auth';
 
 const push = vi.fn();
 const replace = vi.fn();
@@ -18,7 +19,7 @@ function renderMenu() {
 
 describe('UserProfileMenu', () => {
   beforeEach(() => {
-    setAuthToken('jwt-token');
+    setAuthSession('jwt-token', UserRole.User);
     push.mockClear();
     replace.mockClear();
     vi.restoreAllMocks();
@@ -42,6 +43,7 @@ describe('UserProfileMenu', () => {
               email: 'jane@example.com',
               firstName: 'Jane',
               lastName: 'Doe',
+              role: UserRole.User,
             }),
           });
         }
@@ -72,6 +74,7 @@ describe('UserProfileMenu', () => {
           email: 'a@b.com',
           firstName: 'Jane',
           lastName: 'Doe',
+          role: UserRole.User,
         }),
       }),
     );

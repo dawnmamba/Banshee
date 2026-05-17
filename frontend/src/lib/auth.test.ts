@@ -1,33 +1,36 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import { UserRole } from './roles';
 import {
   clearAuthToken,
   getAuthToken,
+  getUserRole,
   isAuthenticated,
-  setAuthToken,
+  setAuthSession,
+  STORAGE_KEY,
 } from './auth';
 
-const STORAGE_KEY = 'banshee_access_token';
-
-describe('auth token storage', () => {
+describe('auth session storage', () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  it('stores and retrieves token', () => {
-    setAuthToken('abc');
+  it('stores and retrieves token and role', () => {
+    setAuthSession('abc', UserRole.Admin);
     expect(getAuthToken()).toBe('abc');
+    expect(getUserRole()).toBe(UserRole.Admin);
     expect(localStorage.getItem(STORAGE_KEY)).toBe('abc');
   });
 
-  it('clears token', () => {
-    setAuthToken('abc');
+  it('clears token and role', () => {
+    setAuthSession('abc', UserRole.User);
     clearAuthToken();
     expect(getAuthToken()).toBeNull();
+    expect(getUserRole()).toBeNull();
     expect(isAuthenticated()).toBe(false);
   });
 
   it('reports authenticated when token exists', () => {
-    setAuthToken('abc');
+    setAuthSession('abc', UserRole.User);
     expect(isAuthenticated()).toBe(true);
   });
 });

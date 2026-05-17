@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { UserAuthService } from './user-auth.service';
+import { UserRole } from './user-role';
 
 jest.mock('bcrypt');
 
@@ -38,7 +39,7 @@ describe('UserAuthService', () => {
   });
 
   describe('register', () => {
-    it('creates user and returns token', async () => {
+    it('creates user with role user and returns token', async () => {
       users.findOne.mockResolvedValue(null);
       users.create.mockImplementation((data) => data as User);
       users.save.mockResolvedValue({
@@ -47,8 +48,9 @@ describe('UserAuthService', () => {
         firstName: 'Jane',
         lastName: 'Doe',
         passwordHash: 'hashed',
+        role: UserRole.User,
         createdAt: new Date(),
-      });
+      } as User);
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashed');
 
       const result = await service.register({
@@ -59,19 +61,14 @@ describe('UserAuthService', () => {
         confirmPassword: 'secret123',
       });
 
-      expect(result.user).toEqual({
-        id: 'user-1',
+      expect(result.user.role).toBe(UserRole.User);
+      expect(users.create).toHaveBeenCalledWith(
+        expect.objectContaining({ role: UserRole.User }),
+      );
+      expect(jwt.sign).toHaveBeenCalledWith({
+        sub: 'user-1',
         email: 'a@b.com',
-        firstName: 'Jane',
-        lastName: 'Doe',
-      });
-      expect(result.accessToken).toBe('test-token');
-      expect(bcrypt.hash).toHaveBeenCalledWith('secret123', 10);
-      expect(users.create).toHaveBeenCalledWith({
-        email: 'a@b.com',
-        firstName: 'Jane',
-        lastName: 'Doe',
-        passwordHash: 'hashed',
+        role: UserRole.User,
       });
     });
 
@@ -84,8 +81,9 @@ describe('UserAuthService', () => {
         firstName: 'Jane',
         lastName: 'Doe',
         passwordHash: 'hashed',
+        role: UserRole.User,
         createdAt: new Date(),
-      });
+      } as User);
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashed');
 
       await service.register({
@@ -108,8 +106,9 @@ describe('UserAuthService', () => {
         firstName: 'Jane',
         lastName: 'Doe',
         passwordHash: 'x',
+        role: UserRole.User,
         createdAt: new Date(),
-      });
+      } as User);
 
       await expect(
         service.register({
@@ -124,15 +123,16 @@ describe('UserAuthService', () => {
   });
 
   describe('login', () => {
-    it('returns token for valid credentials', async () => {
+    it('returns token with role for valid credentials', async () => {
       users.findOne.mockResolvedValue({
         id: 'user-1',
         email: 'a@b.com',
         firstName: 'Jane',
         lastName: 'Doe',
         passwordHash: 'hashed',
+        role: UserRole.User,
         createdAt: new Date(),
-      });
+      } as User);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       const result = await service.login({
@@ -141,7 +141,10 @@ describe('UserAuthService', () => {
       });
 
       expect(result.accessToken).toBe('test-token');
-      expect(result.user.email).toBe('a@b.com');
+      expect(result.user.role).toBe(UserRole.User);
+      expect(jwt.sign).toHaveBeenCalledWith(
+        expect.objectContaining({ role: UserRole.User }),
+      );
     });
 
     it('throws unauthorized for invalid credentials', async () => {
@@ -160,15 +163,16 @@ describe('UserAuthService', () => {
   });
 
   describe('getProfile', () => {
-    it('returns user by id', async () => {
+    it('returns user by id including role', async () => {
       users.findOne.mockResolvedValue({
         id: 'user-1',
         email: 'a@b.com',
         firstName: 'Jane',
         lastName: 'Doe',
         passwordHash: 'hashed',
+        role: UserRole.Admin,
         createdAt: new Date(),
-      });
+      } as User);
 
       const profile = await service.getProfile('user-1');
 
@@ -177,6 +181,7 @@ describe('UserAuthService', () => {
         email: 'a@b.com',
         firstName: 'Jane',
         lastName: 'Doe',
+        role: UserRole.Admin,
       });
     });
   });

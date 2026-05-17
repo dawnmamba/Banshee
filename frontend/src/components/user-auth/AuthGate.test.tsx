@@ -1,13 +1,16 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { UserRole } from '@/lib/roles';
+import { setAuthSession, clearAuthToken } from '@/lib/auth';
 import { AuthGate } from './AuthGate';
-import { setAuthToken, clearAuthToken } from '@/lib/auth';
 
 const replace = vi.fn();
+const notFound = vi.fn();
 
 vi.mock('next/navigation', () => ({
   usePathname: vi.fn(),
   useRouter: () => ({ replace }),
+  notFound: () => notFound(),
 }));
 
 import { usePathname } from 'next/navigation';
@@ -16,6 +19,7 @@ describe('AuthGate', () => {
   beforeEach(() => {
     clearAuthToken();
     replace.mockClear();
+    notFound.mockClear();
     vi.mocked(usePathname).mockReturnValue('/');
   });
 
@@ -32,8 +36,8 @@ describe('AuthGate', () => {
     expect(screen.queryByText('Protected')).not.toBeInTheDocument();
   });
 
-  it('allows authenticated users on protected routes', async () => {
-    setAuthToken('token');
+  it('allows authenticated users on user routes', async () => {
+    setAuthSession('token', UserRole.User);
     render(
       <AuthGate>
         <div>Protected</div>
@@ -41,11 +45,11 @@ describe('AuthGate', () => {
     );
 
     expect(await screen.findByText('Protected')).toBeInTheDocument();
-    expect(replace).not.toHaveBeenCalled();
+    expect(notFound).not.toHaveBeenCalled();
   });
 
-  it('redirects authenticated users away from login', async () => {
-    setAuthToken('token');
+  it('redirects authenticated users away from login to role home', async () => {
+    setAuthSession('token', UserRole.User);
     vi.mocked(usePathname).mockReturnValue('/login');
 
     render(
@@ -56,6 +60,51 @@ describe('AuthGate', () => {
 
     await waitFor(() => {
       expect(replace).toHaveBeenCalledWith('/');
+    });
+  });
+
+  it('redirects admin away from login to /admin', async () => {
+    setAuthSession('token', UserRole.Admin);
+    vi.mocked(usePathname).mockReturnValue('/login');
+
+    render(
+      <AuthGate>
+        <div>Login page</div>
+      </AuthGate>,
+    );
+
+    await waitFor(() => {
+      expect(replace).toHaveBeenCalledWith('/admin');
+    });
+  });
+
+  it('calls notFound when admin visits user route', async () => {
+    setAuthSession('token', UserRole.Admin);
+    vi.mocked(usePathname).mockReturnValue('/');
+
+    render(
+      <AuthGate>
+        <div>User home</div>
+      </AuthGate>,
+    );
+
+    await waitFor(() => {
+      expect(notFound).toHaveBeenCalled();
+    });
+  });
+
+  it('calls notFound when user visits admin route', async () => {
+    setAuthSession('token', UserRole.User);
+    vi.mocked(usePathname).mockReturnValue('/admin');
+
+    render(
+      <AuthGate>
+        <div>Admin</div>
+      </AuthGate>,
+    );
+
+    await waitFor(() => {
+      expect(notFound).toHaveBeenCalled();
     });
   });
 });

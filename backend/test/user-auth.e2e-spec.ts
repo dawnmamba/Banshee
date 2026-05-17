@@ -5,6 +5,7 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { UserAuthService } from '../src/user-auth/user-auth.service';
+import { UserRole } from '../src/user-auth/user-role';
 
 describe('UserAuth (e2e)', () => {
   let app: INestApplication<App>;
@@ -22,6 +23,7 @@ describe('UserAuth (e2e)', () => {
         email: 'e2e@example.com',
         firstName: 'Jane',
         lastName: 'Doe',
+        role: UserRole.User,
       },
       accessToken: 'signed-token',
     });
@@ -31,6 +33,7 @@ describe('UserAuth (e2e)', () => {
       email: 'e2e@example.com',
       firstName: 'Jane',
       lastName: 'Doe',
+      role: UserRole.User,
     });
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -58,6 +61,7 @@ describe('UserAuth (e2e)', () => {
     const realToken = jwtService.sign({
       sub: 'user-1',
       email: 'e2e@example.com',
+      role: UserRole.User,
     });
 
     authService.register.mockResolvedValueOnce({
@@ -66,6 +70,7 @@ describe('UserAuth (e2e)', () => {
         email: 'e2e@example.com',
         firstName: 'Jane',
         lastName: 'Doe',
+        role: UserRole.User,
       },
       accessToken: realToken,
     });
@@ -102,6 +107,7 @@ describe('UserAuth (e2e)', () => {
         email: 'e2e@example.com',
         firstName: 'Jane',
         lastName: 'Doe',
+        role: UserRole.User,
       });
 
     await request(app.getHttpServer())

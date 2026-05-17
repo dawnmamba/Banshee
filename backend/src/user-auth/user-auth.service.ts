@@ -9,12 +9,14 @@ import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { UserRole } from './user-role';
 
 export type AuthUser = {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
+  role: UserRole;
 };
 
 export type AuthResponse = {
@@ -47,6 +49,7 @@ export class UserAuthService {
         firstName: dto.firstName.trim(),
         lastName: dto.lastName.trim(),
         passwordHash,
+        role: UserRole.User,
       }),
     );
 
@@ -85,6 +88,7 @@ export class UserAuthService {
     const accessToken = this.jwtService.sign({
       sub: authUser.id,
       email: authUser.email,
+      role: authUser.role,
     });
     return { user: authUser, accessToken };
   }
@@ -95,6 +99,7 @@ export class UserAuthService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role: user.role,
     };
   }
 }

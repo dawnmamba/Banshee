@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LogoutButton } from './LogoutButton';
-import { setAuthToken, getAuthToken } from '@/lib/auth';
+import { UserRole } from '@/lib/roles';
+import { setAuthSession, getAuthToken } from '@/lib/auth';
 
 const replace = vi.fn();
 
@@ -12,7 +13,7 @@ vi.mock('next/navigation', () => ({
 
 describe('LogoutButton', () => {
   beforeEach(() => {
-    setAuthToken('jwt-token');
+    setAuthSession('jwt-token', UserRole.User);
     replace.mockClear();
     vi.restoreAllMocks();
   });

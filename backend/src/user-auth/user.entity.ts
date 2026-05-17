@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UserRole } from './user-role';
 
 @Entity('users')
 export class User {
@@ -21,6 +22,9 @@ export class User {
 
   @Column({ name: 'password_hash' })
   passwordHash!: string;
+
+  @Column({ type: 'varchar', default: UserRole.User })
+  role!: UserRole;
 
   @Column({ name: 'account_number', type: 'varchar', nullable: true })
   accountNumber!: string | null;

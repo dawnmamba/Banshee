@@ -3,7 +3,7 @@
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { FieldLabel } from '@/components/FieldLabel';
-import { historySearchButtonPt } from '@/lib/primereact/auth-pt';
+import { calendarPt, historySearchButtonPt } from '@/lib/primereact/auth-pt';
 
 type TransferHistoryDateRangeProps = {
   startDate: Date | null;
@@ -13,6 +13,15 @@ type TransferHistoryDateRangeProps = {
   onEndDateChange: (value: Date | null) => void;
   onSearch: () => void;
 };
+
+const calendarProps = {
+  pt: calendarPt,
+  dateFormat: 'yy-mm-dd',
+  showIcon: true,
+  showOnFocus: true,
+  readOnlyInput: true,
+  appendTo: typeof document === 'undefined' ? undefined : document.body,
+} as const;
 
 export function TransferHistoryDateRange({
   startDate,
@@ -30,11 +39,10 @@ export function TransferHistoryDateRange({
             Start date
           </FieldLabel>
           <Calendar
+            {...calendarProps}
             inputId="history-start-date"
             value={startDate}
             onChange={(e) => onStartDateChange((e.value as Date | null) ?? null)}
-            dateFormat="yy-mm-dd"
-            showIcon
             maxDate={endDate ?? undefined}
           />
         </div>
@@ -43,11 +51,10 @@ export function TransferHistoryDateRange({
             End date
           </FieldLabel>
           <Calendar
+            {...calendarProps}
             inputId="history-end-date"
             value={endDate}
             onChange={(e) => onEndDateChange((e.value as Date | null) ?? null)}
-            dateFormat="yy-mm-dd"
-            showIcon
             minDate={startDate ?? undefined}
           />
         </div>

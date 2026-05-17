@@ -176,6 +176,67 @@ export const transactionsTabSelectPt = {
   label: { className: 'text-sm font-medium' },
 };
 
+export const brandLabelClass =
+  'mb-1.5 block text-xs font-medium text-slate-300';
+
+const brandInputClass =
+  'w-full rounded-xl border border-white/[0.08] bg-[#0c1219] py-3 pl-11 pr-4 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/30';
+
+const brandPasswordInputClass = `${brandInputClass} pr-11`;
+
+const brandButtonClass =
+  'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-900/30 transition hover:from-blue-500 hover:to-cyan-400 disabled:opacity-50';
+
+const brandToggleIconClass =
+  'cursor-pointer text-slate-500 hover:text-cyan-300';
+
+export const brandLinkClass =
+  'text-sm font-medium text-cyan-400 transition hover:text-cyan-300';
+
+export const brandMutedTextClass = 'text-center text-sm text-slate-500';
+
+const brandInputIconClass =
+  'absolute top-1/2 left-3.5 flex -translate-y-1/2 text-slate-500';
+
+const brandErrorClass = 'text-sm text-red-400';
+
+export const brandAuthPt = {
+  inputtext: {
+    root: { className: brandInputClass },
+  },
+  iconfield: {
+    root: { className: iconFieldClass },
+  },
+  inputicon: {
+    root: { className: brandInputIconClass },
+  },
+  password: {
+    root: { className: 'w-full' },
+    iconField: {
+      root: { className: iconFieldClass },
+    },
+    inputIcon: {
+      root: { className: inputIconClass },
+    },
+    input: {
+      root: { className: brandPasswordInputClass },
+    },
+    showIcon: { className: brandToggleIconClass },
+    hideIcon: { className: brandToggleIconClass },
+  },
+  button: {
+    root: { className: brandButtonClass },
+    label: { className: 'text-white' },
+  },
+  message: {
+    root: { className: messageRootClass },
+    text: ({ props }: { props: { severity?: string } }) => ({
+      className: props.severity === 'success' ? successClass : brandErrorClass,
+    }),
+    icon: { className: 'hidden' },
+  },
+};
+
 export const authPt = {
   inputtext: {
     root: { className: inputClass },

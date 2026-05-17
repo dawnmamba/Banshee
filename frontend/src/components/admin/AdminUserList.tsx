@@ -12,14 +12,19 @@ import {
 } from '@/lib/api';
 import { SEED_ADMIN_EMAIL } from '@/lib/admin';
 import { UserRole } from '@/lib/roles';
+import { errorMessagePt, successMessagePt } from '@/lib/primereact/auth-pt';
+import { portalButtonOutlineClass } from '@/lib/theme/portal-theme';
 import {
-  errorMessagePt,
-  inputClass,
-  labelClass,
-  secondaryButtonClass,
-  successMessagePt,
-} from '@/lib/primereact/auth-pt';
-import { adminContainerClass, adminPageClass } from './admin-ui';
+  adminCardClass,
+  adminCardGlowClass,
+  adminContainerClass,
+  adminFormInputClass,
+  adminFormLabelClass,
+  adminPageClass,
+  adminSectionLabelClass,
+  adminTableHeadClass,
+  adminTableRowClass,
+} from './admin-ui';
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB');
@@ -109,10 +114,9 @@ export function AdminUserList() {
     <div className={adminPageClass}>
       <div className={adminContainerClass}>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-          Users
-        </h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className={adminSectionLabelClass}>Directory</p>
+        <h1 className="mt-2 text-2xl font-semibold text-white">Users</h1>
+        <p className="mt-2 text-sm text-slate-400">
           View accounts and change roles. The system admin and your own account
           cannot be modified here.
         </p>
@@ -123,7 +127,7 @@ export function AdminUserList() {
         className="mb-6 grid w-full grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
       >
         <div className="min-w-0">
-          <label htmlFor="user-search" className={labelClass}>
+          <label htmlFor="user-search" className={adminFormLabelClass}>
             Search users
           </label>
           <InputText
@@ -131,13 +135,13 @@ export function AdminUserList() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Name or email"
-            pt={{ root: { className: inputClass } }}
+            pt={{ root: { className: adminFormInputClass } }}
           />
         </div>
         <Button
           type="submit"
           label="Search"
-          className={`${secondaryButtonClass} w-full sm:w-auto`}
+          className={`${portalButtonOutlineClass} w-full sm:w-auto`}
           disabled={loading}
         />
       </form>
@@ -159,32 +163,34 @@ export function AdminUserList() {
         />
       )}
 
-      <div className="overflow-x-auto rounded-2xl border border-black/[.08] bg-white shadow-sm dark:border-white/[.145] dark:bg-zinc-950">
+      <div
+        className={`${adminCardClass} ${adminCardGlowClass} relative overflow-x-auto`}
+      >
         <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
+          <thead className={adminTableHeadClass}>
             <tr>
-              <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">
+              <th className="px-4 py-3 font-medium text-slate-400">
                 Name
               </th>
-              <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">
+              <th className="px-4 py-3 font-medium text-slate-400">
                 Email
               </th>
-              <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">
+              <th className="px-4 py-3 font-medium text-slate-400">
                 Role
               </th>
-              <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">
+              <th className="px-4 py-3 font-medium text-slate-400">
                 Account
               </th>
-              <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">
+              <th className="px-4 py-3 font-medium text-slate-400">
                 NIC
               </th>
-              <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">
+              <th className="px-4 py-3 font-medium text-slate-400">
                 Mobile
               </th>
-              <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">
+              <th className="px-4 py-3 font-medium text-slate-400">
                 Joined
               </th>
-              <th className="px-4 py-3 font-medium text-zinc-700 dark:text-zinc-300">
+              <th className="px-4 py-3 font-medium text-slate-400">
                 Actions
               </th>
             </tr>
@@ -194,7 +200,7 @@ export function AdminUserList() {
               <tr>
                 <td
                   colSpan={8}
-                  className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400"
+                  className="px-4 py-8 text-center text-slate-500"
                 >
                   Loading users…
                 </td>
@@ -204,7 +210,7 @@ export function AdminUserList() {
               <tr>
                 <td
                   colSpan={8}
-                  className="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400"
+                  className="px-4 py-8 text-center text-slate-500"
                 >
                   No users found.
                 </td>
@@ -212,29 +218,22 @@ export function AdminUserList() {
             )}
             {!loading &&
               users.map((user) => (
-                <tr
-                  key={user.id}
-                  className="border-t border-zinc-100 dark:border-zinc-800"
-                >
-                  <td className="px-4 py-3 text-zinc-900 dark:text-zinc-50">
+                <tr key={user.id} className={adminTableRowClass}>
+                  <td className="px-4 py-3 text-white">
                     {user.firstName} {user.lastName}
                   </td>
-                  <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
-                    {user.email}
-                  </td>
-                  <td className="px-4 py-3 capitalize text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-3 text-slate-400">{user.email}</td>
+                  <td className="px-4 py-3 capitalize text-slate-400">
                     {user.role}
                   </td>
-                  <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-3 text-slate-400">
                     {user.accountNumber ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
-                    {user.nic ?? '—'}
-                  </td>
-                  <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-3 text-slate-400">{user.nic ?? '—'}</td>
+                  <td className="px-4 py-3 text-slate-400">
                     {user.mobile ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-3 text-slate-400">
                     {formatDate(user.createdAt)}
                   </td>
                   <td className="px-4 py-3">
@@ -243,7 +242,7 @@ export function AdminUserList() {
                         <Button
                           type="button"
                           label="Make admin"
-                          className={secondaryButtonClass}
+                          className={portalButtonOutlineClass}
                           disabled={updatingId === user.id}
                           onClick={() =>
                             void handleRoleChange(user, UserRole.Admin)
@@ -253,7 +252,7 @@ export function AdminUserList() {
                         <Button
                           type="button"
                           label="Make user"
-                          className={secondaryButtonClass}
+                          className={portalButtonOutlineClass}
                           disabled={updatingId === user.id}
                           onClick={() =>
                             void handleRoleChange(user, UserRole.User)
@@ -261,9 +260,7 @@ export function AdminUserList() {
                         />
                       )
                     ) : (
-                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                        Protected
-                      </span>
+                      <span className="text-xs text-slate-600">Protected</span>
                     )}
                   </td>
                 </tr>

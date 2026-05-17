@@ -35,3 +35,32 @@ body {
 [data-theme='dark'] #history-end-date {
   color: #fafafa;
 }
+
+@keyframes auth-wallpaper-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes auth-topographic-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, -24px, 0);
+  }
+}
+
+.auth-topographic-pattern {
+  animation: auth-topographic-drift 48s linear infinite;
+}
+
+.auth-live-wallpaper__orb {
+  will-change: opacity, transform;
+}

@@ -14,9 +14,13 @@ import {
 import { errorMessagePt } from '@/lib/primereact/auth-pt';
 import {
   adminCardClass,
+  adminCardGlowClass,
   adminContainerClass,
   adminHeroClass,
   adminPageClass,
+  adminSectionLabelClass,
+  adminTableHeadClass,
+  adminTableRowClass,
 } from './admin-ui';
 import { AdminQuickActionCard } from './AdminQuickActionCard';
 import { AdminStatCard } from './AdminStatCard';
@@ -72,19 +76,17 @@ export function AdminDashboard() {
       <div className={adminContainerClass}>
         <section className={adminHeroClass}>
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-zinc-900/5 via-transparent to-zinc-900/10 dark:from-zinc-100/5 dark:to-zinc-100/10"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-600/5"
             aria-hidden
           />
           <div className="relative">
-            <p className="text-sm font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Operator console
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
+            <p className={adminSectionLabelClass}>Operator console</p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
               {user
                 ? `Welcome back, ${user.firstName}`
                 : 'Welcome back'}
             </h1>
-            <p className="mt-3 max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
+            <p className="mt-3 max-w-2xl text-base text-slate-400">
               Monitor registered accounts, review roles, and jump into user
               management. Banking routes stay isolated from this workspace.
             </p>
@@ -100,9 +102,7 @@ export function AdminDashboard() {
         )}
 
         <section>
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            Overview
-          </h2>
+          <h2 className={`mb-4 ${adminSectionLabelClass}`}>Overview</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <AdminStatCard
               label="Total users"
@@ -126,9 +126,7 @@ export function AdminDashboard() {
         </section>
 
         <section>
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            Quick actions
-          </h2>
+          <h2 className={`mb-4 ${adminSectionLabelClass}`}>Quick actions</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <AdminQuickActionCard
               href="/admin/users"
@@ -147,26 +145,28 @@ export function AdminDashboard() {
           </div>
         </section>
 
-        <section className={`${adminCardClass} overflow-hidden`}>
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+        <section
+          className={`${adminCardClass} ${adminCardGlowClass} relative overflow-hidden`}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-6 py-4">
             <div>
-              <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+              <h2 className="text-base font-semibold text-white">
                 Recent registrations
               </h2>
-              <p className="mt-0.5 text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="mt-0.5 text-sm text-slate-400">
                 Latest accounts in the system
               </p>
             </div>
             <Link
               href="/admin/users"
-              className="text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-100"
+              className="text-sm font-medium text-cyan-300 hover:text-cyan-200"
             >
               View all
             </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
-              <thead className="bg-zinc-50 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400">
+              <thead className={adminTableHeadClass}>
                 <tr>
                   <th className="px-6 py-3 font-medium">Name</th>
                   <th className="px-6 py-3 font-medium">Email</th>
@@ -179,7 +179,7 @@ export function AdminDashboard() {
                   <tr>
                     <td
                       colSpan={4}
-                      className="px-6 py-8 text-center text-zinc-500"
+                      className="px-6 py-8 text-center text-slate-500"
                     >
                       Loading…
                     </td>
@@ -189,7 +189,7 @@ export function AdminDashboard() {
                   <tr>
                     <td
                       colSpan={4}
-                      className="px-6 py-8 text-center text-zinc-500"
+                      className="px-6 py-8 text-center text-slate-500"
                     >
                       No users yet.
                     </td>
@@ -197,20 +197,15 @@ export function AdminDashboard() {
                 )}
                 {!loading &&
                   recentUsers.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="border-t border-zinc-100 dark:border-zinc-800"
-                    >
-                      <td className="px-6 py-3 text-zinc-900 dark:text-zinc-50">
+                    <tr key={row.id} className={adminTableRowClass}>
+                      <td className="px-6 py-3 text-white">
                         {row.firstName} {row.lastName}
                       </td>
-                      <td className="px-6 py-3 text-zinc-600 dark:text-zinc-400">
-                        {row.email}
-                      </td>
-                      <td className="px-6 py-3 capitalize text-zinc-600 dark:text-zinc-400">
+                      <td className="px-6 py-3 text-slate-400">{row.email}</td>
+                      <td className="px-6 py-3 capitalize text-slate-400">
                         {row.role}
                       </td>
-                      <td className="px-6 py-3 text-zinc-600 dark:text-zinc-400">
+                      <td className="px-6 py-3 text-slate-400">
                         {new Date(row.createdAt).toLocaleDateString('en-GB')}
                       </td>
                     </tr>
@@ -223,4 +218,5 @@ export function AdminDashboard() {
     </div>
   );
 }
+
 

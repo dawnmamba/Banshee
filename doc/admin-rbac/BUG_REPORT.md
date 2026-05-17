@@ -62,3 +62,54 @@ The `typeorm` npm script invokes `typeorm-ts-node-commonjs`, whose Windows `.cmd
 - [x] `cd backend && npm test -- --testPathPatterns=AddUserRoleAndSeedAdmin`
 - [x] `cd backend && npm run migration:run`
 - [x] `cd backend && npm run migration:show` shows `AddUserRoleAndSeedAdmin` applied
+
+---
+
+## BUG-002
+
+| Field | Value |
+|-------|-------|
+| **Status** | fixed |
+| **Severity** | high |
+| **Date opened** | 2026-05-17 |
+| **PRD** | `doc/admin-rbac/PRD.md` |
+| **Linked requirements** | FR-9 |
+
+### Summary
+
+Visiting `/` (or any wrong-role path) crashes with runtime error: `notFound() is not allowed to use in root layout`.
+
+### Steps to reproduce
+
+1. Sign in as admin
+2. Open `http://localhost:3000/`
+
+### Expected vs actual
+
+| | Behavior |
+|---|---|
+| **Expected** | 404-style “page not found” UI (FR-9) |
+| **Actual** | Next.js runtime error overlay |
+
+### Root cause
+
+`AuthGate` is rendered from the root `layout.tsx` via `AppShell`. It called `notFound()` from `next/navigation` on wrong-role paths; Next.js 16 forbids `notFound()` in the root layout tree.
+
+### Regression test
+
+| ID | Test file | Test name |
+|----|-----------|-----------|
+| T11 | `AuthGate.test.tsx` | `shows role not found when admin visits user route` |
+
+### Fixes applied
+
+#### Fix attempt 1 (2026-05-17)
+
+- **What changed:** Replaced `notFound()` with inline `RoleNotFound` component in `AuthGate`.
+- **Files:** `AuthGate.tsx`, `RoleNotFound.tsx`, `AuthGate.test.tsx`
+- **Why:** Preserves FR-9 UX without calling `notFound()` from the root layout.
+
+### Verification
+
+- [x] `cd frontend && npm test -- --run AuthGate`
+- [ ] Manual: admin on `/` shows “Page not found” with no runtime error

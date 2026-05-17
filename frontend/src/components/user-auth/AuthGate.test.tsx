@@ -1,16 +1,14 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, describe, it, expect, vi, beforeEach } from 'vitest';
 import { UserRole } from '@/lib/roles';
 import { setAuthSession, clearAuthToken } from '@/lib/auth';
 import { AuthGate } from './AuthGate';
 
 const replace = vi.fn();
-const notFound = vi.fn();
 
 vi.mock('next/navigation', () => ({
   usePathname: vi.fn(),
   useRouter: () => ({ replace }),
-  notFound: () => notFound(),
 }));
 
 import { usePathname } from 'next/navigation';
@@ -19,8 +17,11 @@ describe('AuthGate', () => {
   beforeEach(() => {
     clearAuthToken();
     replace.mockClear();
-    notFound.mockClear();
     vi.mocked(usePathname).mockReturnValue('/');
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('redirects unauthenticated users to login', async () => {
@@ -45,7 +46,7 @@ describe('AuthGate', () => {
     );
 
     expect(await screen.findByText('Protected')).toBeInTheDocument();
-    expect(notFound).not.toHaveBeenCalled();
+    expect(screen.queryByText('Page not found')).not.toBeInTheDocument();
   });
 
   it('redirects authenticated users away from login to role home', async () => {
@@ -78,7 +79,7 @@ describe('AuthGate', () => {
     });
   });
 
-  it('calls notFound when admin visits user route', async () => {
+  it('shows role not found when admin visits user route', async () => {
     setAuthSession('token', UserRole.Admin);
     vi.mocked(usePathname).mockReturnValue('/');
 
@@ -88,12 +89,11 @@ describe('AuthGate', () => {
       </AuthGate>,
     );
 
-    await waitFor(() => {
-      expect(notFound).toHaveBeenCalled();
-    });
+    expect(await screen.findByText('Page not found')).toBeInTheDocument();
+    expect(screen.queryByText('User home')).not.toBeInTheDocument();
   });
 
-  it('calls notFound when user visits admin route', async () => {
+  it('shows role not found when user visits admin route', async () => {
     setAuthSession('token', UserRole.User);
     vi.mocked(usePathname).mockReturnValue('/admin');
 
@@ -103,8 +103,7 @@ describe('AuthGate', () => {
       </AuthGate>,
     );
 
-    await waitFor(() => {
-      expect(notFound).toHaveBeenCalled();
-    });
+    expect(await screen.findByText('Page not found')).toBeInTheDocument();
+    expect(screen.queryByText('Admin')).not.toBeInTheDocument();
   });
 });

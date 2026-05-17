@@ -44,7 +44,8 @@ Document seeded admin in `backend/.env.example` (comments only; no secrets).
 | T3 | FR-6 | backend | `roles.guard.spec.ts` | allows user, denies admin on user route |
 | T4 | FR-7 | backend | `admin.controller.spec.ts` | dashboard requires admin role |
 | T5 | FR-8 | frontend | `auth.test.ts` | stores/clears role with token |
-| T6 | FR-9 | frontend | `AuthGate.test.tsx` | wrong role → notFound |
+| T6 | FR-9 | frontend | `AuthGate.test.tsx` | wrong role → role not found UI |
+| T11 | BUG-002 | frontend | `AuthGate.test.tsx` | no notFound() from root layout |
 | T7 | FR-8 | frontend | `LoginForm.test.tsx` | admin redirects to `/admin` |
 | T8 | FR-9 | frontend | `route-groups.test.ts` | path group helpers |
 | T9 | BUG-001 | backend | `database-cli.spec.ts` | migration CLI script is Windows-compatible |
@@ -94,7 +95,8 @@ Document seeded admin in `backend/.env.example` (comments only; no secrets).
 - [x] T3 — roles guard
 - [x] T4 — admin controller
 - [x] T5 — auth role storage
-- [x] T6 — AuthGate notFound
+- [x] T6 — AuthGate role not found UI
+- [x] T11 — AuthGate avoids notFound in root layout (BUG-002)
 - [x] T7 — login redirect by role
 - [x] T8 — route group helpers
 - [x] T9 — migration CLI script (BUG-001)

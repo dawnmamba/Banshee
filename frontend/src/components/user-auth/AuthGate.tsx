@@ -1,6 +1,6 @@
 'use client';
 
-import { notFound, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getUserRole, isAuthenticated } from '@/lib/auth';
 import {
@@ -8,6 +8,7 @@ import {
   isPathAllowedForRole,
   PUBLIC_PATHS,
 } from '@/lib/roles';
+import { RoleNotFound } from './RoleNotFound';
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -39,7 +40,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   }, [mounted, authed, isPublic, role, router]);
 
   if (wrongRole) {
-    notFound();
+    return <RoleNotFound />;
   }
 
   if (!mounted || shouldRedirect) {

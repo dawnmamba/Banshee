@@ -82,6 +82,33 @@ export const historySearchButtonPt = {
   label: { className: 'text-white dark:text-zinc-900' },
 };
 
+const dialogMaskClass = 'fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4';
+
+const dialogRootClass =
+  'w-full max-w-lg rounded-2xl border border-zinc-300 bg-white shadow-xl dark:border-zinc-600 dark:bg-zinc-950';
+
+export const fraudDialogPt = {
+  root: { className: dialogRootClass },
+  header: {
+    className:
+      'flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-700',
+  },
+  title: {
+    className: 'text-lg font-semibold text-zinc-900 dark:text-zinc-50',
+  },
+  headerIcons: { className: 'flex items-center' },
+  closeButton: {
+    root: {
+      className:
+        'inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50',
+    },
+  },
+  content: {
+    className: 'space-y-4 px-6 py-5 text-sm text-zinc-700 dark:text-zinc-300',
+  },
+  mask: { className: dialogMaskClass },
+};
+
 const calendarPanelClass =
   'z-[1100] mt-1 min-w-[18rem] rounded-lg border border-zinc-300 bg-white p-3 shadow-lg dark:border-zinc-600 dark:bg-zinc-950';
 
@@ -247,4 +274,5 @@ export const authPt = {
     label: { className: 'sr-only' },
   },
   calendar: calendarPt,
+  dialog: fraudDialogPt,
 };

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { FraudDetectionService } from '../fraud-detection/fraud-detection.service';
 import { TransactionHistoryImportController } from './transaction-history-import.controller';
 import { TransactionHistoryImportService } from './transaction-history-import.service';
 
@@ -9,6 +10,7 @@ describe('TransactionHistoryImportController', () => {
     getSummary: jest.Mock;
     getTransactions: jest.Mock;
   };
+  let fraudDetectionService: { analyze: jest.Mock };
 
   beforeEach(async () => {
     importService = {
@@ -19,6 +21,14 @@ describe('TransactionHistoryImportController', () => {
       getSummary: jest.fn().mockResolvedValue([]),
       getTransactions: jest.fn().mockResolvedValue([]),
     };
+    fraudDetectionService = {
+      analyze: jest.fn().mockResolvedValue({
+        riskLevel: 'low',
+        fraudDetected: false,
+        flaggedCustomers: [],
+        narrative: 'No issues found.',
+      }),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TransactionHistoryImportController],
@@ -26,6 +36,10 @@ describe('TransactionHistoryImportController', () => {
         {
           provide: TransactionHistoryImportService,
           useValue: importService,
+        },
+        {
+          provide: FraudDetectionService,
+          useValue: fraudDetectionService,
         },
       ],
     }).compile();
@@ -49,5 +63,17 @@ describe('TransactionHistoryImportController', () => {
   it('delegates transactions to service', async () => {
     await controller.getTransactions('CUS0001');
     expect(importService.getTransactions).toHaveBeenCalledWith('CUS0001');
+  });
+
+  it('delegates fraud analysis to fraud detection service', async () => {
+    const result = await controller.analyzeFraud();
+
+    expect(fraudDetectionService.analyze).toHaveBeenCalled();
+    expect(result).toEqual({
+      riskLevel: 'low',
+      fraudDetected: false,
+      flaggedCustomers: [],
+      narrative: 'No issues found.',
+    });
   });
 });
